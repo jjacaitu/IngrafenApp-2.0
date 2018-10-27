@@ -242,8 +242,23 @@ def solicitud_cot(request):
 
 
                     if cotizacion_encontrada.numero_cotizacion != "":
-
-                        cotizacion_encontrada.detalles += "\n" + "Referencia COT PAPYRUS #" + str(cotizacion_encontrada.numero_cotizacion)
+                        texto_cot_papyrus = detalle[-1].split()
+                        texto_cot_papyrus = texto_cot_papyrus[-1].split()
+                        print(texto_cot_papyrus[0][0])
+                        if texto_cot_papyrus[0][0] == "#":
+                            print("si")
+                            detalles_finales = cotizacion_encontrada.detalles.split("\n")
+                            print(detalles_finales)
+                            referencia = detalles_finales[-1].split()
+                            print(referencia)
+                            referencia[-1] = "#" + str(cotizacion_encontrada.numero_cotizacion)
+                            print(referencia)
+                            referencia = " ".join(referencia)
+                            print(referencia)
+                            detalles_finales[-1] = referencia
+                            cotizacion_encontrada.detalles = " ".join(detalles_finales)
+                        else:
+                            cotizacion_encontrada.detalles += "\n" + "Referencia COT PAPYRUS #" + str(cotizacion_encontrada.numero_cotizacion)
                     data = {"nombre_cliente":cotizacion_encontrada.nombre_cliente,"trabajo":cotizacion_encontrada.trabajo,"cantidad":cotizacion_encontrada.cantidad}
                     cotizacion = Solicitud_cot(user=request.user,data=data)
 
