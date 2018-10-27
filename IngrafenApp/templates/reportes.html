@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block content %}
+{% load staticfiles %}
+<div class="container">
+  {% if user.categoria == "ADM" %}
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+  <input type="text" id="parametro" name="parametro" value="" style="display:none" placeholder="Buscar por:">
+  <select id="cl" name="cl" style="display:none">
+    {% for clientes in clientes_creados %}
+    <option value="{{ clientes.nombre }}">{{ clientes.nombre }}</option>
+{% endfor %}
+  </select>
+  <select id="tr" class="opciones_trabajos" name="tr" style="display:none">
+    {% for trabajos in trabajos_creados %}
+    <option value="{{ trabajos.trabajo }}">{{ trabajos.trabajo }}</option>
+{% endfor %}
+  </select>
+  <select id="cot" class="cotizadores" name="cot" style="display:none">
+    {% for cotizador in cotizadores %}
+    <option value="{{ cotizador.username }}">{{ cotizador.username }}</option>
+{% endfor %}
+  </select>
+  <select id="ven" class="vendedores" name="ven" style="display:none">
+    {% for vendedor in vendedores %}
+    <option value="{{ vendedor.username }}">{{ vendedor.username }}</option>
+{% endfor %}
+  </select>
+  <select  class="seleccion" name="seleccion" onchange="filtros_busqueda(this)">
+    <option value="Todo">Todo</option>
+    <option value="Cliente">Cliente</option>
+    <option value="Trabajo">Tipo de trabajo</option>
+
+    <option value="Promocion">Nombre de promocion</option>
+    {% if user.categoria == "ADM" %}
+    <option value="Vendedor">Vendedor</option>
+
+    {% endif %}
+
+
+
+  </select>
+  <select class="" name="tipo" style="display:initial">
+    <option id="totales" value="solo_totales">Solo totales</option>
+    <option id="b_por_cliente"value="por_cliente">Por cliente</option>
+    <option id="b_por_trabajo"value="por_tipo_trabajo">Por tipo de trabajo</option>
+
+  </select>
+
+
+
+
+  <label for="desde">DESDE:</label>
+
+  <input type="date" name="desde" value="">
+  <label for="hasta">HASTA:</label>
+  <input type="date" name="hasta" value="">
+  <input type="submit" name="buscar" value="BUSCAR" class="btn btn-primary">
+  {% else %}
+  <h2>USTED NO TIENE ACCESO A ESTA PAGINA</h2>
+</div>
+{% endif %}
+
+<p>{{texto_busqueda| linebreaks}}</p>
+<table class="table table-bordered table-striped">
+<thead class="thead-dark">
+  <th>Usuario</th>
+  <th>{{header}}</th>
+  <th>Tiempo promedio</th>
+
+  <th>cantidad</th>
+</thead>
+<tbody>
+
+
+{% for usuario,todos in resultados_dict.items %}
+<tr >
+  <td rowspan="{{todos|length}}">{{usuario}}</td>
+
+  {% for trabajos,items in todos.items %}
+  <td>{{trabajos}}</td>
+  {% for key, valor in items.items %}
+  <td>{{valor}}</td>
+
+
+
+  {% endfor %}
+  </tr>
+
+  {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+{% if texto_busqueda %}
+{% else %}
+<div class="container">
+
+<h2>Cotizaciones por cotizador</h2>
+<canvas id="myChart" width="100" height="100"></canvas></div>
+
+<div class="container">
+
+<h2>Cotizaciones por vendedor</h2>
+<canvas id="myChart2" width="100" height="100"></canvas></div>
+{% endif %}
+<script>
+var datos = {{ datas }};
+var labels_names = {{ labels_names|safe }};
+var titles = {{ titles|safe }};
+var colors = ["#ede50b","#060c84","#77040e","#026017","#09bc31","#e06608","#4b8ffc","#5e29c6","#c62981","#fff200","#7cff02","#00ffff"]
+function getRandomArbitrary(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+}
+
+function addData(chart, label, color, data) {
+		chart.data.datasets.push({
+	    label: label,
+      backgroundColor: color,
+      data: data
+    });
+    chart.update();
+}
+
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles[0],
+            data: datos[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
+
+var datos_ventas = {{ datas_vendedores }};
+
+var titles_ventas = {{ titles_vendedores|safe }};
+
+var ctx2 = document.getElementById("myChart2").getContext('2d');
+var myChart2 = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles_ventas[0],
+            data: datos_ventas[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
+
+for (i = 1; i < titles.length; i++) {
+  addData(myChart, titles[i], colors[getRandomArbitrary(0,12)], datos[i]);
+
+}
+
+for (i = 1; i < titles_ventas.length; i++) {
+  addData(myChart2, titles_ventas[i], colors[getRandomArbitrary(0,12)], datos_ventas[i]);
+
+}
+
+
+</script>
+
+
+{% endblock %}

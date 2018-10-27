@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    {% if registered %}
+        <h2>Usuario registrado con exito</h2>
+    {% else %}
+        <h2>Registro de usuario nuevo</h1>
+
+  <form enctype="multipart/form-data" method="POST">
+
+
+  {% csrf_token %}
+<div class="container">
+
+<table>
+  <tr>
+    <td><label for="">Nombre:</label></td>
+    <td>{{ usuario.first_name }}</td>
+    <td><label for="">Apellido:</label></td>
+    <td>{{ usuario.last_name }}</td>
+  </tr>
+
+  <tr>
+    <td><label for="">Usuario:</label></td>
+    <td>{{ usuario.username }}</td>
+    <td><label for="">Contraseña:</label></td>
+    <td>{{ usuario.password }}</td>
+
+
+  </tr>
+  <tr>
+    <td><label for="">Email:</label></td>
+    <td>{{ usuario.email }}</td>
+  </tr>
+  <tr>
+    <td><label for="">Categoria:</label></td>
+    <td>{{ usuario.categoria }}</td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+  <input type="submit" value="REGISTRAR" class="btn btn-primary">
+  </div>
+  </form>
+  {% endif %}
+</div>
+</div>
+{% endblock %}

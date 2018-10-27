@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+{% load staticfiles %}
+
+
+<div class="container rounded" id="info" >
+  <div class="row-md-auto rounded" style="background-color:#104eb2">
+  <h2 class="rounded">Contáctenos</h2>
+  </div>
+  <div class="row-md-auto rounded" >
+
+
+
+
+  <img id="logo2" src="{% static "LOGOS-02.png" %}" alt="" style="margin:5px">
+  </div>
+<div class="row justify-content-md-center">
+
+
+
+
+    <!--Google map-->
+  <div id="map-container" class="z-depth-1" style="height: 500px;border-style:solid;border-color:#104eb2;margin:5px" ></div>
+
+
+
+  <!--Google Maps-->
+  <script src="https://maps.google.com/maps/api/js?key=AIzaSyBCq-ONaxtMmqBP1WgBEJTjXRIhODsgZAE&callback=regular_map"></script>
+
+
+</div>
+
+
+      <div class="row">
+<div class="col-1">
+
+
+        <img src="{% static "ubicacion.png" %}" alt="" style="height:25px"></div>
+        <div class="col-11">
+
+        <label for="">Km 5.5 via Daule, Mapasingue Este calle 5ta y Av. las Aguas </label>
+        </div>
+</div>
+<div class="row">
+<div class="col-1">
+
+
+  <img src="{% static "telefono.png" %}" alt="" style="height:25px"></div>
+  <div class="col-11">
+
+  <label for="">Pbx: (593 4) 2003201 </label>
+  <label for="">Fax: (593 4) 2003641 </label>
+  <label for="">Base: 0999752770 </label>
+  </div>
+</div>
+<div class="row">
+<div class="col-1">
+
+
+  <img src="{% static "mail.png" %}" alt="" style="height:25px"></div>
+  <div class="col-11">
+
+  <label for="">ventas@ingrafen.com </label>
+  </div>
+</div>
+
+    </div>
+
+
+
+
+</div>
+
+</div>
+{% endblock %}

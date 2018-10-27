@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for cotizacion in cotizacion_a_ver %}
+<table>
+  <td name="numero">{{ cotizacion.num_solicitud }} </td>
+  <td>{{ cotizacion.vendedor }} </td>
+  <td>{{ cotizacion.nombre_cliente }} </td>
+  <td>{{ cotizacion.material }} </td>
+  <td>{{ cotizacion.tipo_trabajo }} </td>
+  {% endfor %}
+<input type="hidden" name="numero" value={{cotizacion.num_solicitud}}>
+</table>
+<form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+<label for="cotizacion_papyrus"># COTIZACION</label>
+<input type="text" name="cotizacion_papyrus">
+
+<input type="submit" name="" value="COMPLETAR">
+<input type="submit" name="" value="REGRESAR">
+</form>
+
+{% endblock %}

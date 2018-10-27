@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+{% load staticfiles %}
+
+
+<h2>Productos en Impresion OFFSET:</h2>
+<div class="container">
+<table id="tabla_servicios" class="table table-bordered rounded">
+  <thead class="rounded">
+    <th class="bg-primary rounded" style="color:white">Publicidad y mercadeo</th>
+    <th class="bg-danger rounded" style="color:white">Papeleria:</th>
+    <th class="bg-warning rounded" style="color:white">Material de empaque</th>
+  </thead>
+  <tbody style="background-color:white">
+    <tr>
+      <td><ul>
+        <li>Volantes</li>
+        <li>Afiches</li>
+        <li>Vibrines</li>
+        <li>Colgantes</li>
+        <li>Dipticos</li>
+        <li>Tripticos</li>
+        <li>Habladores</li>
+        <li>Revistas</li>
+        <li>Catálogos</li>
+        <li>Raspaditas</li>
+        <li>Material POP en general.</li>
+      </ul></td>
+      <td><ul>
+        <li>Hojas membretadas</li>
+        <li>Sobres</li>
+        <li>Blocks de notas</li>
+        <li>Libretas</li>
+        <li>Agendas</li>
+        <li>Planeadores</li>
+        <li>Tarjetas de presentación.</li>
+        <li>Carpetas</li>
+
+      </ul></td>
+      <td><ul>
+        <li>Cajas de todo tipo.</li>
+        <li>Etiquetas</li>
+        <li>Pirutinas con y sin impresión</li>
+        <li>Porta hotdogs</li>
+        <li>Papel de envoltura</li>
+
+      </ul></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+<h2>Productos en Impresión de GIGANTOGRAFÍA:</h2>
+<div class="container">
+<table id="tabla_servicios" class="table table-bordered rounded">
+  <thead class="rounded">
+    <th colspan="3"class="bg-primary rounded" style="color:white">Publicidad y mercadeo</th>
+
+  </thead>
+  <tbody style="background-color:white">
+    <tr>
+      <td><ul>
+        <li>Impresión en lonas</li>
+        <li>Impresión en viniles</li>
+        <li>Brandeos de locales comerciales</li>
+        <li>Impresión de vallas</li>
+        </ul></td>
+        <td><ul><li>Roll-ups</li>
+        <li>Señaleticas</li>
+        <li>Rompetráficos</li>
+        <li>Exhibidores</li></ul></td>
+        <td><ul><li>Backing</li>
+        <li>Pendones</li>
+        <li>Letreros</li>
+        <li>Stands</li>
+      </ul></td>
+
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="container">
+  <div class="row">
+
+    <div class="card text-white  mb-3" style="width: 18rem;background-color:#104eb2">
+  <img class="card-img-top" src="{% static "IMG_9520.JPG" %}" alt="Card image cap">
+  <div class="card-body">
+    <p class="card-text" style="color:white">Impresión en gigantografía en gran formato para impresión de gran tamaño utilizadas principalmente para fines publicitarios en una gran variedad de productos que van desde una valla publicitaria hasta el brandeo de un local comercial.</p>
+  </div>
+</div>
+
+
+
+    <div class="card text-white mb-3" style="width: 18rem; background-color:#104eb2">
+  <img class="card-img-top" src="{% static "xerox.png" %}" alt="Card image cap"style="height:220px">
+  <div class="card-body">
+    <p class="card-text" style="color:white">Impresión digital para satisfacer la necesidad en cuanto a solicitudes de volúmenes bajos que permite la entrega rápida del material en casos de emergencia.</p>
+  </div>
+</div>
+
+
+
+    <div class="card text-white mb-3" style="width: 18rem;background-color:#104eb2">
+  <img class="card-img-top" src="{% static "IMG_9527.JPG" %}" alt="Card image cap">
+  <div class="card-body">
+    <p class="card-text" style="color:white">Impresión OFFSET para impresión de volúmenes altos, maquinaria moderna que nos permite entregar en el menor tiempo posible y con la mayor calidad de impresión del mercado.</p>
+
+</div>
+</div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+{% endblock %}

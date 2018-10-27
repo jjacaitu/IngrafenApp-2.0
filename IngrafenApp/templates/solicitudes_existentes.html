@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% block content %}
+{% if buscar == False %}
+<div class="container">
+{% if cotizaciones_existentes.exists %}
+<h2>COTIZACIONES SOLICITADAS:</h2>
+<table class="table table-striped table-bordered">
+<thead class="thead-dark">
+
+
+  <th>VENDEDOR</th>
+  <th>CLIENTE</th>
+  <th>PROMOCION</th>
+  <th>MATERIAL</th>
+  <th>TIPO DE TRABAJO</th>
+  <th>CANTIDAD</th>
+  <th>MEDIDA</th>
+  <th>FECHA SOLICITADA</th>
+  {% if user.categoria == "COT" or user.categoria == "ADM" %}
+  <th>COTIZADOR ASIGNADO</th>
+  {% endif %}
+  <th># SOLICITUD</th>
+  </thead>
+{% for cotizaciones in cotizaciones_existentes %}
+<form enctype="multipart/form-data" method="POST">
+{% csrf_token %}
+
+
+<tr>
+
+
+{% if cotizaciones.vendedor == user.username or user.categoria == "COT" or user.categoria == "ADM" %}
+  <td>{{ cotizaciones.vendedor }} </td>
+  <td>{{ cotizaciones.nombre_cliente }} </td>
+  <td>{{ cotizaciones.trabajo }} </td>
+  <td>{{ cotizaciones.material }} </td>
+  <td>{{ cotizaciones.tipo_trabajo }} </td>
+  <td>{{ cotizaciones.cantidad }} </td>
+  <td>{{ cotizaciones.medida_alto }} X {{ cotizaciones.medida_ancho }} </td>
+  <td><strong>{{ cotizaciones.fecha_solicitada }}</strong></td>
+  {% if user.categoria == "COT" or user.categoria == "ADM" %}
+  <td style="color:#114291"><strong>{{ cotizaciones.procesado_por }}</td>
+  {% endif %}
+  <td>  <input type="submit" name="numero" class="btn btn-primary" value={{cotizaciones.num_solicitud}}></td>
+  </tr>
+  </form>
+  {% endif %}
+  {% endfor %}
+  </div>
+  {% else %}
+  <h2>NO HAY COTIZACIONES</h2>
+  {% endif %}
+  {% else %}
+  <div class="container">
+
+
+  {% for cotizacion in cotizacion_existentes %}
+  <h2>Solicitud de cotizacion #{{cotizacion.num_solicitud}}</h2>
+  {% if user.categoria == "ADM" or user.categoria == "COT" %}
+  <h3 style="background-color:#ce5252;text-align:left;color:white">Cotizador asignado: {{cotizacion.procesado_por}}</h3>
+  {% endif %}
+  <table class="table table-bordered solido">
+
+  <tr>
+    <td colspan="2"><label for="">Cliente:</label></td>
+<td colspan="2">{{ cotizacion.nombre_cliente }}</td>
+<td colspan="2"> <label for="">Nombre de promocion: </label></td>
+<td colspan="2">{{ cotizacion.trabajo }}</td>
+
+  </tr>
+<tr>
+  <td colspan="2"><label for="">Tipo de trabajo:</label></td>
+  <td colspan="2">{{ cotizacion.tipo_trabajo}}
+
+</td>
+
+  <td colspan="2"><label for="">Cantidad:</label></td>
+  <td colspan="2">{{ cotizacion.cantidad }}</td>
+
+
+  </tr>
+
+  </table>
+  <table class="table table-bordered solido">
+
+    <thead class="thead solido">
+      <th colspan="8" style="color:darkblue;text-align:center">MATERIALES</th>
+    </thead>
+  <tr>
+    <td><label for="">Material</label></td>
+    <td> <label for="">Descripcion</label> </td>
+    <td> <label for="">Medida</label> </td>
+    <td> <label for="">Impresion</label> </td>
+    <td> <label for="">Uv</label>  </td>
+    <td> <label for="">Laminado</label> </td>
+    <td> <label for="">Troquelado</label> </td>
+  </tr>
+  <tr>
+    <td> {{ cotizacion.material }} </td>
+    <td> {{ cotizacion.descripcion_material }} </td>
+    <td>{{ cotizacion.medida_alto }} X {{ cotizacion.medida_ancho }} </td>
+    <td>
+      <label for="">Tiro:</label>
+      {{ cotizacion.impresion_tiro }}
+
+      <label for="">Retiro:</label>
+      {{ cotizacion.impresion_retiro }}
+     </td>
+    <td>
+      {{ cotizacion.uv }}
+      </td>
+      <td>
+      {{ cotizacion.laminado }}</td>
+<td>
+    {{ cotizacion.troquelado }}
+     </td>
+
+  </tr>
+
+{% if cotizacion.material2 != "" and cotizacion.material2 != None %}
+<tr>
+  <td> {{ cotizacion.material2 }} </td>
+  <td> {{ cotizacion.descripcion_material2 }} </td>
+  <td>{{ cotizacion.medida_alto_2 }} X {{ cotizacion.medida_ancho_2 }} </td>
+  <td>
+    <label for="">Tiro:</label>
+    {{ cotizacion.impresion_tiro2 }}
+
+    <label for="">Retiro:</label>
+    {{ cotizacion.impresion_retiro2 }}
+   </td>
+  <td>
+    {{ cotizacion.uv2 }}
+    </td>
+    <td>
+    {{ cotizacion.laminado2 }}</td>
+<td>
+  {{ cotizacion.troquelado2 }}
+   </td>
+
+</tr>
+{% endif %}
+
+{% if cotizacion.material3 != "" and cotizacion.material3 != None  %}
+<tr>
+  <td> {{ cotizacion.material3 }} </td>
+  <td> {{ cotizacion.descripcion_material3 }} </td>
+  <td>{{ cotizacion.medida_alto_3 }} X {{ cotizacion.medida_ancho_3 }} </td>
+  <td>
+    <label for="">Tiro:</label>
+    {{ cotizacion.impresion_tiro3 }}
+
+    <label for="">Retiro:</label>
+    {{ cotizacion.impresion_retiro3 }}
+   </td>
+  <td>
+    {{ cotizacion.uv3 }}
+    </td>
+    <td>
+    {{ cotizacion.laminado3 }}</td>
+<td>
+  {{ cotizacion.troquelado3 }}
+   </td>
+
+</tr>
+{% endif %}
+
+{% if cotizacion.material4 != "" and cotizacion.material4 != None %}
+<tr>
+  <td> {{ cotizacion.material4 }} </td>
+  <td> {{ cotizacion.descripcion_material4 }} </td>
+  <td>{{ cotizacion.medida_alto_4 }} X {{ cotizacion.medida_ancho_4 }} </td>
+  <td>
+    <label for="">Tiro:</label>
+    {{ cotizacion.impresion_tiro4 }}
+
+    <label for="">Retiro:</label>
+    {{ cotizacion.impresion_retiro4 }}
+   </td>
+  <td>
+    {{ cotizacion.uv4 }}
+    </td>
+    <td>
+    {{ cotizacion.laminado4 }}</td>
+<td>
+  {{ cotizacion.troquelado4 }}
+   </td>
+
+</tr>
+{% endif %}
+
+{% if cotizacion.material5 != "" and cotizacion.material5 != None %}
+<tr>
+  <td> {{ cotizacion.material5 }} </td>
+  <td> {{ cotizacion.descripcion_material5 }} </td>
+  <td>{{ cotizacion.medida_alto_5 }} X {{ cotizacion.medida_ancho_5 }} </td>
+  <td>
+    <label for="">Tiro:</label>
+    {{ cotizacion.impresion_tiro5 }}
+
+    <label for="">Retiro:</label>
+    {{ cotizacion.impresion_retiro5 }}
+   </td>
+  <td>
+    {{ cotizacion.uv5 }}
+    </td>
+    <td>
+    {{ cotizacion.laminado5 }}</td>
+<td>
+  {{ cotizacion.troquelado5 }}
+   </td>
+
+</tr>
+{% endif %}
+</table>
+
+<table class="table table-bordered solido">
+
+
+  <tr>
+
+<td colspan="2"> <label for="">Detalles adicionales:</label> <p>{{ cotizacion.detalles|linebreaks}}</p> </td>
+    <td colspan="2" rowspan="1"> {% if cotizacion.imagen != "none" %}<a href="{{cotizacion.imagen.url}}"> <img class="upload" src="{{ cotizacion.imagen.url }}" alt="Sin imagen adjunta"></a>{% else %}Sin imagen adjunta{% endif %} </td>
+
+</tr>
+</table>
+
+  {% endfor %}
+  </div>
+  </table>
+  <form enctype="multipart/form-data" method="POST">
+
+    {% csrf_token %}
+    {% for cotizacion in cotizacion_existentes %}
+  <input type="hidden" name="numero1" value={{cotizacion.num_solicitud}}>
+  {% endfor %}
+  <div class="container">
+
+{% if user.categoria == "COT" or user.categoria == "ADM" %}
+  <label for="cotizacion_papyrus"># COTIZACION</label>
+  <input type="text" name="cotizacion_papyrus" required>
+
+  <input type="submit" name="boton_completar" value="COMPLETAR" class="btn btn-primary">
+
+  {% endif %}
+  </form>
+  <form enctype="multipart/form-data" method="POST">
+    <input type="submit" name="boton_regresar" value="REGRESAR" class="btn btn-primary">
+  </form>
+
+
+
+
+
+
+{% if user.categoria == "ADM" or user.categoria == "COT" %}
+<form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  {% for cotizacion in cotizacion_existentes %}
+<input type="hidden" name="numero1" value={{cotizacion.num_solicitud}}>
+{% endfor %}
+  <p style="text-align:center">
+  <input type="submit" name="asignar" value="ASIGNAR" class="btn btn-danger btn-lg"></p>
+</form>
+{% endif %}
+</div>
+
+</table>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,115 @@
+h1{color: red;}
+label{color: darkblue;
+      font-weight: bold;
+      font-family: 'Exo 2', sans-serif;
+      padding: 4px;
+}
+h2{color: white;
+      font-weight: bold;
+      font-family: 'Exo 2', sans-serif;
+      margin: 4px;
+      padding: 4px;
+    text-align: center;
+  background-color: #104eb2;}
+
+
+input{border-radius: 6px;}
+#imagen_cot{width: auto;
+            height: 400px;}
+
+h3{font-weight: bold;
+font-family: 'Exo 2', sans-serif;
+margin: 4px;
+padding: 4px;
+text-align: center;
+background-color: #104eb2;
+width: auto;
+max-height: 90vh;}
+#interiores{display: none;}
+nav{margin-bottom: 4px;}
+#logo {width: 50px;
+  background-color: white;
+height: auto;
+
+background-size: auto;
+}
+
+#map-container {
+  width: 80%;
+  height: 100%;
+float: left;
+      }
+.container {
+  margin:10px;
+  align-content: center;
+}
+.card{
+  margin: 20px;
+}
+
+
+.card-img-top{
+  background-color: white;
+}
+
+#info{
+  text-align: center;
+  background-color: white;
+}
+
+#logo2 {width: 200px;
+height: auto;
+
+background-size: auto;
+}
+
+#plogo {
+text-align: center;
+}
+
+#fotos{width: 500px;
+height: auto;
+
+background-size: auto;
+
+}
+
+.magenta{
+  background-color: #d3005f;
+}
+
+.amarillo{
+  background-color: #fff200;
+}
+body{
+  background-color: #dee8f9;
+}
+
+
+#tabla_servicios thead {
+  text-align: justify;
+  background-color: #1e74ff;
+}
+
+p, li{
+
+  font-family: 'Exo 2', sans-serif;
+  color: #002d77;
+}
+td{
+  font-weight: normal;
+}
+
+.solido td{
+   border:3px solid #012256;
+}
+.imagen-carrusel{
+  width: auto;
+  max-height: 90vh;
+
+}
+
+.upload{
+  width: 100px;
+  height: auto;
+}

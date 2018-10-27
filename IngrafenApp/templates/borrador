@@ -1,0 +1,1 @@
+cotizaciones_completadas = CotizacionesSolicitadas.objects.all().exclude(cotizador__exact="")
