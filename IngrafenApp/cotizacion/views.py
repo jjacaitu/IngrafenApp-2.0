@@ -16,6 +16,11 @@ from dateutil.relativedelta import *
 
 
 
+
+
+
+
+
 # Create your views here.
 def home(request):
     cotizaciones_existentes = CotizacionesSolicitadas.objects.all().filter(cotizador__exact="")
