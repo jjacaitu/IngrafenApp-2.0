@@ -105,7 +105,7 @@
 
   {% if user.is_authenticated and user.categoria != "COT" %}
         <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Produccion{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_proceso|length }}</span>{% endif %}</a>
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Producción{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_proceso|length }}</span>{% endif %}</a>
       <div class="dropdown-menu">
 
         <a class="dropdown-item" href="{% url "ordenes_en_proceso" %}">Ordenes en proceso{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_proceso|length }}</span>{% endif %}</a>
