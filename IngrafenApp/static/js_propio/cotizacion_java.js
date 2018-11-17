@@ -83,6 +83,8 @@ function agregar1() {
     document.getElementById("troquelado1").required = true;
     document.getElementById("impresiont1").required = true;
     document.getElementById("impresionr1").required = true;
+    document.getElementById("impresiont1").value = "";
+    document.getElementById("impresionr1").value = "";
     document.getElementById("troquelado1").value = "";
     document.getElementById("troqueladh1").value = "";
   }
@@ -104,6 +106,8 @@ function agregar2() {
     document.getElementById("troquelado2").required = true;
     document.getElementById("impresiont2").required = true;
     document.getElementById("impresionr2").required = true;
+    document.getElementById("impresiont2").value = "";
+    document.getElementById("impresionr2").value = "";
     document.getElementById("troquelado2").value = "";
     document.getElementById("troqueladh2").value = "";
 
@@ -119,13 +123,15 @@ function agregar3() {
     document.getElementById("descripcion3").required = true;
     document.getElementById("alto3").required = true;
     document.getElementById("ancho3").required = true;
-    document.getElementById("alto3").value = 0;
-    document.getElementById("ancho3").value = 0;
+    document.getElementById("alto3").value = "";
+    document.getElementById("ancho3").value = "";
     document.getElementById("uv3").required = true;
     document.getElementById("laminado3").required = true;
     document.getElementById("troquelado3").required = true;
     document.getElementById("impresiont3").required = true;
     document.getElementById("impresionr3").required = true;
+    document.getElementById("impresiont3").value = "";
+    document.getElementById("impresionr3").value = "";
     document.getElementById("troquelado3").value = "";
     document.getElementById("troqueladh3").value = "";
 
@@ -144,13 +150,15 @@ function agregar4() {
     document.getElementById("descripcion4").required = true;
     document.getElementById("alto4").required = true;
     document.getElementById("ancho4").required = true;
-    document.getElementById("alto4").value = 0;
-    document.getElementById("ancho4").value = 0;
+    document.getElementById("alto4").value = "";
+    document.getElementById("ancho4").value = "";
     document.getElementById("uv4").required = true;
     document.getElementById("laminado4").required = true;
     document.getElementById("troquelado4").required = true;
     document.getElementById("impresiont4").required = true;
     document.getElementById("impresionr4").required = true;
+    document.getElementById("impresiont4").value = "";
+    document.getElementById("impresionr4").value = "";
     document.getElementById("troquelado4").value = "";
     document.getElementById("troqueladh4").value = "";
 
@@ -292,10 +300,11 @@ function quitar4() {
 function pantonet1(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonest1").style.display = "initial";
-
+    document.getElementById("num_pantonest1").required = true;
   }else{
 document.getElementById("num_pantonest1").style.display = "none";
 document.getElementById("num_pantonest1").value = "";
+document.getElementById("num_pantonest1").required = false;
 
   }
 }
@@ -304,10 +313,12 @@ document.getElementById("num_pantonest1").value = "";
 function pantoner1(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonesr1").style.display = "initial";
+    document.getElementById("num_pantonesr1").required = true;
 
   }else{
 document.getElementById("num_pantonesr1").style.display = "none";
 document.getElementById("num_pantonesr1").value = "";
+document.getElementById("num_pantonesr1").required = false;
 
   }
 }
@@ -315,10 +326,12 @@ document.getElementById("num_pantonesr1").value = "";
 function pantonet2(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonest2").style.display = "initial";
+    document.getElementById("num_pantonest2").required = true;
 
   }else{
 document.getElementById("num_pantonest2").style.display = "none";
 document.getElementById("num_pantonest2").value = "";
+document.getElementById("num_pantonest2").required = false;
 
   }
 }
@@ -326,10 +339,12 @@ document.getElementById("num_pantonest2").value = "";
 function pantoner2(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonesr2").style.display = "initial";
+    document.getElementById("num_pantonesr2").required = true;
 
   }else{
 document.getElementById("num_pantonesr2").style.display = "none";
 document.getElementById("num_pantonesr2").value = "";
+document.getElementById("num_pantonesr2").required = false;
 
   }
 }
@@ -337,10 +352,12 @@ document.getElementById("num_pantonesr2").value = "";
 function pantonet3(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonest3").style.display = "initial";
+    document.getElementById("num_pantonest3").required = true;
 
   }else{
 document.getElementById("num_pantonest3").style.display = "none";
 document.getElementById("num_pantonest3").value = "";
+document.getElementById("num_pantonest3").required = false;
 
   }
 }
@@ -348,10 +365,12 @@ document.getElementById("num_pantonest3").value = "";
 function pantoner3(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonesr3").style.display = "initial";
+    document.getElementById("num_pantonesr3").required = true;
 
   }else{
 document.getElementById("num_pantonesr3").style.display = "none";
 document.getElementById("num_pantonesr3").value = "";
+document.getElementById("num_pantonesr3").required = false;
 
   }
 }
@@ -359,10 +378,12 @@ document.getElementById("num_pantonesr3").value = "";
 function pantonet4(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonest4").style.display = "initial";
+    document.getElementById("num_pantonest4").required = true;
 
   }else{
 document.getElementById("num_pantonest4").style.display = "none";
 document.getElementById("num_pantonest4").value = "";
+document.getElementById("num_pantonest4").required = false;
 
   }
 }
@@ -370,10 +391,12 @@ document.getElementById("num_pantonest4").value = "";
 function pantoner4(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonesr4").style.display = "initial";
+    document.getElementById("num_pantonesr4").required = true;
 
   }else{
 document.getElementById("num_pantonesr4").style.display = "none";
 document.getElementById("num_pantonesr4").value = "";
+document.getElementById("num_pantonesr4").required = false;
 
   }
 }
@@ -381,10 +404,12 @@ document.getElementById("num_pantonesr4").value = "";
 function pantonet5(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonest5").style.display = "initial";
+    document.getElementById("num_pantonest5").required = true;
 
   }else{
 document.getElementById("num_pantonest5").style.display = "none";
 document.getElementById("num_pantonest5").value = "";
+document.getElementById("num_pantonest5").required = false;
 
   }
 }
@@ -392,10 +417,12 @@ document.getElementById("num_pantonest5").value = "";
 function pantoner5(item){
   if(item.value == "Pantones"  || item.value == "F/C + Pantones"){
     document.getElementById("num_pantonesr5").style.display = "initial";
+    document.getElementById("num_pantonesr5").required = true;
 
   }else{
 document.getElementById("num_pantonesr5").style.display = "none";
 document.getElementById("num_pantonesr5").value = "";
+document.getElementById("num_pantonesr5").required = false;
 
   }
 }
@@ -537,7 +564,7 @@ function chequeo_material(item){
     document.getElementById('troquelado').required = true;
     document.getElementById('troqueladoadh').required = false;
     document.getElementById('troqueladoadh').value = "";
-    document.getElementById("impresionr").value = "";
+
     document.getElementById("impresionr").disabled = false;
   }
 }
@@ -558,7 +585,7 @@ function chequeo_material2(item){
     document.getElementById('troquelado1').required = true;
     document.getElementById('troqueladoadh1').required = false;
     document.getElementById('troqueladoadh1').value = "";
-    document.getElementById("impresionr1").value = "";
+
     document.getElementById("impresionr1").disabled = false;
   }
 }
@@ -579,7 +606,7 @@ function chequeo_material3(item){
     document.getElementById('troquelado2').required = true;
     document.getElementById('troqueladoadh2').required = false;
     document.getElementById('troqueladoadh2').value = "";
-    document.getElementById("impresionr2").value = "";
+
     document.getElementById("impresionr2").disabled = false;
   }
 }
@@ -600,7 +627,7 @@ function chequeo_material4(item){
     document.getElementById('troquelado3').required = true;
     document.getElementById('troqueladoadh3').required = false;
     document.getElementById('troqueladoadh3').value = "";
-    document.getElementById("impresionr3").value = "";
+
     document.getElementById("impresionr3").disabled = false;
   }
 }
@@ -621,7 +648,7 @@ function chequeo_material5(item){
     document.getElementById('troquelado4').required = true;
     document.getElementById('troqueladoadh4').required = false;
     document.getElementById('troqueladoadh4').value = "";
-    document.getElementById("impresionr4").value = "";
+
     document.getElementById("impresionr4").disabled = false;
   }
 }

@@ -15,10 +15,12 @@ CATEGORIA_USUARIO = (("ADM","ADMINISTRADOR"),("VEN","VENDEDOR"),("COT","COTIZADO
 UV_CHOICES = (("SIN","SIN UV"),("UVT","UV TIRO"),("UVTR","UV TIRO Y RETIRO"),("UVST","UV SECTORIZADO TIRO"),("UVSTR","UV SECTORIZADO TIRO Y RETIRO"))
 LAMINADO_CHOICES = (("SIN","SIN LAMINADO"),("LBT","LAMINADO BRILLO TIRO"),("LBTR","LAMINADO BRILLO TIRO Y RETIRO"),("LMT","LAMINADO MATE TIRO"),("LMTR","LAMINADO MATE TIRO Y RETIRO"))
 TROQUELADO_CHOICES = (("SIN","SIN TROQUELAR"),("TRN","TROQUEL NUEVO"),("TRE","TROQUEL EXISTENTE"),("MC","EN PLANAS CON MEDIO CORTE"))
-
+tipo_impresion = (("Offset","Impresion Offset"),("Laser","Impresion Laser"))
 
 class Usuarios(AbstractUser):
     categoria = models.CharField(max_length=3,choices=CATEGORIA_USUARIO,default="ADM")
+
+
 
 
 class Materiales(models.Model):
@@ -48,14 +50,121 @@ class TipoDeTrabajo(models.Model):
 
 class Clientes(models.Model):
     nombre = models.CharField(max_length=40, unique=True)
+    nombre_razon_social = models.CharField(max_length=40, default="")
     vendedor_asociado = models.ForeignKey(Usuarios, on_delete=models.PROTECT)
     usuario = models.CharField(max_length=20, blank=True)
+    desactivado = models.BooleanField(default=False)
     def save(self):
        self.nombre = self.nombre.title()
        super(Clientes, self).save()
 
     def __str__(self):
         return self.nombre
+
+class Clientes_ot(models.Model):
+    nombre = models.ForeignKey(Clientes, on_delete=models.PROTECT, related_name="client_razon_social")
+    nombre_razon_social = models.CharField(max_length=40, default="")
+    vendedor_asociado = models.CharField(max_length=20, blank=True)
+    usuario = models.CharField(max_length=20, blank=True)
+    codigo = models.CharField(max_length=20)
+    desactivado = models.BooleanField(default=False)
+    def save(self):
+       self.nombre_razon_social = self.nombre_razon_social.title()
+       super(Clientes_ot, self).save()
+
+    def __str__(self):
+        return str(self.codigo) + " " + str(self.nombre_razon_social)
+
+class OrdenesSolicitadas(models.Model):
+    num_solicitud_ot = models.AutoField(primary_key = True)
+    vendedor_ot = models.CharField(max_length=20, blank=True)
+    trabajo_ot = models.CharField(max_length=40)
+    nombre_cliente_ot = models.ForeignKey(Clientes_ot, on_delete=models.PROTECT, related_name="client_ot")
+    tipo_trabajo_ot = models.CharField(max_length=30,null=True,blank=True)
+    cantidad_ot = models.IntegerField()
+
+    material_ot = models.CharField(max_length=30,null=True,blank=True)
+    descripcion_material_ot = models.CharField(max_length=30,null=True,blank=True)
+    medida_alto_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)])
+    medida_ancho_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)])
+    impresion_tiro_ot = models.CharField(max_length=30,null=True,blank=True)
+    impresion_retiro_ot = models.CharField(max_length=30,null=True,blank=True)
+    uv_ot = models.CharField(max_length=30,null=True,blank=True)
+    laminado_ot = models.CharField(max_length=30,null=True,blank=True)
+    troquelado_ot = models.CharField(max_length=30,null=True,blank=True)
+
+    material2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    medida_alto_2_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)], default=0)
+    medida_ancho_2_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)], default=0)
+    descripcion_material2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    impresion_tiro2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    impresion_retiro2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    uv2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    laminado2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    troquelado2_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+
+    material3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    medida_alto_3_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)], default=0)
+    medida_ancho_3_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)], default=0)
+    descripcion_material3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    impresion_tiro3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    impresion_retiro3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    uv3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    laminado3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+    troquelado3_ot = models.CharField(max_length=30,null=True,blank=True,default="")
+
+    material4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    medida_alto_4_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)], default=0)
+    medida_ancho_4_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)], default=0)
+    descripcion_material4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    impresion_tiro4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    impresion_retiro4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    uv4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    laminado4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    troquelado4_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+
+    material5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    medida_alto_5_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)],default=0)
+    medida_ancho_5_ot = models.FloatField(null=True,blank=True,validators=[MaxValueValidator(99)],default=0)
+    descripcion_material5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    impresion_tiro5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    impresion_retiro5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    uv5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    laminado5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+    troquelado5_ot = models.CharField(max_length=30,null=True,blank=True, default="")
+
+
+    fecha_solicitada_ot = models.DateTimeField(auto_now_add=True)
+
+    detalles_ot = models.CharField(max_length=300, blank=True,null=True)
+    fecha_completada_ot = models.DateTimeField(auto_now=False, blank=True, null=True)
+    cotizador_ot = models.CharField(max_length=20, blank=True)
+    numero_cotizacion_ot = models.CharField(max_length=20, blank=True)
+    fecha_entrega_ot = models.DateField(blank=True,null=True)
+    fecha_entregada = models.DateField(blank=True,null=True)
+    procesado_por_ot = models.CharField(max_length=25,default=" ",blank=True)
+
+    estado_ot = models.CharField(max_length=25,default="Por aperturar",blank=True)
+    num_ot_relacionada = models.CharField(max_length=20, blank=True, default= "")
+    solicitud_cot = models.CharField(max_length=20, blank=True, default= "")
+    direccion_entrega = models.CharField(max_length=50, blank=True)
+    persona_recibe = models.CharField(max_length=20, blank=True)
+    forma_empaque = models.CharField(max_length=20, blank=True)
+
+    arte = models.BooleanField(default=False)
+    dummie = models.BooleanField(default=False)
+    machote = models.BooleanField(default=False)
+    prueba_de_color = models.BooleanField(default=False)
+    muestra_real = models.BooleanField(default=False)
+
+    precio_ot = models.FloatField(null=True,blank=True, default=0)
+    material_confirmado =  models.BooleanField(default=False)
+
+    tipo_impresion = models.CharField(max_length=10,choices=tipo_impresion)
+
+    def __str__(self):
+        return "#{},cliente: {},trabajo: {}".format(str(self.num_solicitud_ot),str(self.nombre_cliente_ot),str(self.tipo_trabajo_ot))
+
 
 class CotizacionesSolicitadas(models.Model):
     num_solicitud = models.AutoField(primary_key = True)
@@ -122,14 +231,17 @@ class CotizacionesSolicitadas(models.Model):
     fecha_solicitada = models.DateTimeField(auto_now_add=True)
 
     detalles = models.CharField(max_length=300, blank=True,null=True)
-    fecha_completada = models.DateTimeField(auto_now=True)
+    fecha_completada = models.DateTimeField(auto_now=False, blank=True, null=True)
     cotizador = models.CharField(max_length=20, blank=True)
     numero_cotizacion = models.CharField(max_length=20, blank=True)
     imagen = models.ImageField(upload_to="uploads/", blank=True, null=True, default="none")
     procesado_por = models.CharField(max_length=25,default=" ",blank=True)
 
-    solicitud_ot = models.CharField(max_length=20, blank=True, default= "")
+    solicitud_ot = models.CharField(max_length=35, blank=True, default= "")
     num_ot_relacionada = models.CharField(max_length=20, blank=True, default= "")
+    aprobacion_cot = models.CharField(max_length=20,blank=True, default="Pendiente")
+
+
 #AUMENTAR PARA SUBIR IMAGEN DE LO QUE SE DESEA COTIZAR
 
     def save(self, *args, **kwargs):

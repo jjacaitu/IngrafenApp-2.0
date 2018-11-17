@@ -19,6 +19,7 @@
   {% if user.categoria == "COT" or user.categoria == "ADM" %}
   <th>COTIZADOR ASIGNADO</th>
   {% endif %}
+  <th>OT</th>
   <th># SOLICITUD</th>
   </thead>
 {% for cotizaciones in cotizaciones_existentes %}
@@ -40,6 +41,16 @@
   <td><strong>{{ cotizaciones.fecha_solicitada }}</strong></td>
   {% if user.categoria == "COT" or user.categoria == "ADM" %}
   <td style="color:#114291"><strong>{{ cotizaciones.procesado_por }}</td>
+  {% endif %}
+
+  {% if cotizaciones.solicitud_ot == "" %}
+  <td><strong>Sin solicitud</strong></td>
+  {% else %}
+  {% if cotizaciones.num_ot_relacionada != "" %}
+  <td><strong>OT #{{ cotizaciones.num_ot_relacionada }}</strong></td>
+  {% else %}
+  <td><strong>Solicitud OT #{{ cotizaciones.solicitud_ot }}</strong></td>
+  {% endif %}
   {% endif %}
   <td>  <input type="submit" name="numero" class="btn btn-primary" value={{cotizaciones.num_solicitud}}></td>
   </tr>
@@ -117,7 +128,7 @@
 
   </tr>
 
-{% if cotizacion.material2 != "" and cotizacion.material2 != None %}
+{% if cotizacion.material2 != "" and cotizacion.material2 != "None" %}
 <tr>
   <td> {{ cotizacion.material2 }} </td>
   <td> {{ cotizacion.descripcion_material2 }} </td>
@@ -141,7 +152,7 @@
 </tr>
 {% endif %}
 
-{% if cotizacion.material3 != "" and cotizacion.material3 != None  %}
+{% if cotizacion.material3 != "" and cotizacion.material3 != "None"  %}
 <tr>
   <td> {{ cotizacion.material3 }} </td>
   <td> {{ cotizacion.descripcion_material3 }} </td>
@@ -165,7 +176,7 @@
 </tr>
 {% endif %}
 
-{% if cotizacion.material4 != "" and cotizacion.material4 != None %}
+{% if cotizacion.material4 != "" and cotizacion.material4 != "None" %}
 <tr>
   <td> {{ cotizacion.material4 }} </td>
   <td> {{ cotizacion.descripcion_material4 }} </td>
@@ -189,7 +200,7 @@
 </tr>
 {% endif %}
 
-{% if cotizacion.material5 != "" and cotizacion.material5 != None %}
+{% if cotizacion.material5 != "" and cotizacion.material5 != "None" %}
 <tr>
   <td> {{ cotizacion.material5 }} </td>
   <td> {{ cotizacion.descripcion_material5 }} </td>
@@ -245,6 +256,7 @@
   {% endif %}
   </form>
   <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
     <input type="submit" name="boton_regresar" value="REGRESAR" class="btn btn-primary">
   </form>
 

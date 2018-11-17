@@ -36,6 +36,15 @@ urlpatterns = [
     path("compañia/", views.quienes_somos,name="quienes_somos"),
     path("servicios/",views.servicios,name="servicios"),
     path("reportes/",views.reportes,name="reportes"),
+    path("solicitud_ot/",views.solicitud_ot,name="solicitud_ot"),
+    path("ordenes_por_aperturar/",views.ordenes_por_aperturar,name="ordenes_por_aperturar"),
+    path("ordenes_aperturadas/",views.ordenes_aperturadas,name="ordenes_aperturadas"),
+    path("ordenes_en_proceso/",views.ordenes_en_proceso,name="ordenes_en_proceso"),
+    path("ordenes_sin_fecha/",views.ordenes_sin_fecha,name="ordenes_sin_fecha"),
+    path("error01/",views.error01,name="error01"),
+    path("clientes_ot/",views.creacion_cliente_ot,name="creacion_cliente_ot"),
+    path("bloqueo_clientes/",views.bloqueo_clientes,name="bloqueo_clientes"),
+    path("confirmacion_material/",views.confirmacion_material,name="confirmacion_material"),
 
 
 ]

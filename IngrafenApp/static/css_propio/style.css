@@ -1,4 +1,12 @@
 h1{color: red;}
+.carousel-item{
+    height: 600px;
+    width: inherit;
+}
+.carousel-item img{
+    height: 500px;
+    width: inherit;
+}
 label{color: darkblue;
       font-weight: bold;
       font-family: 'Exo 2', sans-serif;

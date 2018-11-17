@@ -11,7 +11,7 @@
 <script type="text/javascript" src="{% static "fusioncharts.js" %}"></script>
   <head>
     <meta charset="utf-8">
-    <title>Ingrafen</title>
+    <title>Ingrafen Industria Grafica Envasadora Ecuatoriana</title>
     <link rel="stylesheet" href="{% static "css_propio/style.css" %}" type="text/css">
     <script type="text/javascript" src="//cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
     <script type="text/javascript" src="//cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
@@ -34,9 +34,10 @@
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="{% static "/ms-icon-144x144.png" %}">
 <meta name="theme-color" content="#ffffff">
+<meta name="robots" content="nosnippet">
 
 <meta name="google-site-verification" content="RWwFAUJGCZDx6QfbZguKGPSWjvAuuiKO5u6XjvMjsYs" />
-<meta name="description" content="Industria gráfica con mas de 40 años de experiencia, especializados en brindar el servicio mas rápido del mercado.">
+<meta name="description" content="Somos Ingrafen (Industria gráfica Envasadora Ecuatoriana) imprenta con más de 40 años de experiencia, especializados en brindar el servicio de impresión mas rápido del mercado.">
 
 
   </head>
@@ -57,37 +58,93 @@
         <a class="nav-link" href="{% url 'servicios' %}">Servicios y productos <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'contactenos' %}">Contactenos <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{% url 'contactenos' %}">Contáctenos <span class="sr-only">(current)</span></a>
       </li>
 
 {% if user.is_authenticated %}
+{% if user.categoria != "PRO" %}
       <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Menu{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ cotizaciones_existentes|length }}</span>{% endif %}</a>
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Cotizaciones{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ cotizaciones_existentes|length }}</span>{% endif %}</a>
     <div class="dropdown-menu">
         {% if user.is_authenticated and user.categoria != "COT" %}
       <a class="dropdown-item" href="{% url 'solicitud' %}">Solicitar nueva cotización</a>
-
+      <div class="dropdown-divider"></div>
       {% endif %}
       {% if user.is_authenticated %}
-      <div class="dropdown-divider"></div>
+
       <a class="dropdown-item" href="{% url 'solicitudes_existentes' %}">Cotizaciones pendientes{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ cotizaciones_existentes|length }}</span>{% endif %}</a>
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url 'cotizaciones_completadas' %}">Cotizaciones completadas</a>
       {% endif %}
-      {% if user.is_authenticated and user.categoria == "ADM" %}
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url 'reportes' %}">Reportes</a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url 'creacion_usuario' %}">Registrar nuevo usuario</a>
-      <a class="dropdown-item" href="{% url 'crear_material' %}">Crear Material</a>
-      <a class="dropdown-item" href="{% url 'crear_trabajo' %}">Crear Tipo de trabajo</a>
-      <a class="dropdown-item" href="{% url 'crear_cliente' %}">Crear Cliente</a>
 
-      {% endif %}
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url 'logout' %}">Logout {{ user }}</a>
-    </div>
+{% endif %}
   </li>
+
+        <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Ordenes{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_existentes|length }}</span>{% endif %}</a>
+      <div class="dropdown-menu">
+          {% if user.is_authenticated and user.categoria != "COT" and user.categoria != "PRO" %}
+        <a class="dropdown-item" href="{% url 'solicitud_ot' %}">Solicitar nueva orden</a>
+        <div class="dropdown-divider"></div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+
+
+        <a class="dropdown-item" href="{% url "ordenes_por_aperturar" %}">Ordenes por aperturar {% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_existentes|length }}</span>{% endif %}</a>
+        {% if user.categoria != "PRO" %}
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url "ordenes_aperturadas" %}">Ordenes aperturadas</a>
+        {% endif %}
+
+        {% if user.categoria == "ADM" or user.username == "Mmaldonado" %}
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'creacion_cliente_ot' %}">Registrar cliente OT</a>
+          {% endif %}
+        {% endif %}
+
+  {% if user.is_authenticated and user.categoria != "COT" %}
+        <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Produccion{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_proceso|length }}</span>{% endif %}</a>
+      <div class="dropdown-menu">
+
+        <a class="dropdown-item" href="{% url "ordenes_en_proceso" %}">Ordenes en proceso{% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_proceso|length }}</span>{% endif %}</a>
+
+
+        {% if user.is_authenticated and user.categoria != "VEN" %}
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url "ordenes_sin_fecha" %}">Ordenes sin fecha {% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_por_fecha|length }}</span>{% endif %}</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url "ordenes_aperturadas" %}">Ordenes aperturadas</a>
+        {% endif %}
+{% endif %}
+        {% if user.categoria == "COT" or user.categoria == "ADM" %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "confirmacion_material" %}">Bodega <span class="badge badge-light" style="margin:3px">{{ ordenes_por_confirmar|length }}</span> </a>
+        </li>
+
+
+        {% endif %}
+
+        {% if user.is_authenticated and user.categoria == "ADM" %}
+        <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Administracion</a>
+      <div class="dropdown-menu">
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'reportes' %}">Reportes</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'creacion_usuario' %}">Registrar nuevo usuario</a>
+        <a class="dropdown-item" href="{% url 'crear_material' %}">Crear Material</a>
+        <a class="dropdown-item" href="{% url 'crear_trabajo' %}">Crear Tipo de trabajo</a>
+        <a class="dropdown-item" href="{% url 'crear_cliente' %}">Crear Cliente</a>
+        <a class="dropdown-item" href="{% url 'bloqueo_clientes' %}">Bloquear Cliente</a>
+  </li>
+        {% endif %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'logout' %}">Salir <span class="sr-only">(current)</span></a>
+        </li>
+
+
         {% else %}
         <form class="form-inline" method="POST">
         {% csrf_token %}

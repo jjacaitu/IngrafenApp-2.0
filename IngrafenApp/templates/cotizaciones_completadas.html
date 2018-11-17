@@ -35,6 +35,7 @@
     <option value="Cliente">Cliente</option>
     <option value="Trabajo">Tipo de trabajo</option>
     <option value="Solicitud"># Solicitud</option>
+    <option value="Cotizacion"># Cotizacion</option>
     <option value="Promocion">Nombre de promocion</option>
     {% if user.categoria == "ADM" %}
     <option value="Vendedor">Vendedor</option>
@@ -55,12 +56,12 @@
 <div class="">
 
 
-<table class="table table-striped table-bordered">
+<table class="table table-striped table-bordered w-auto">
 <thead class="thead-dark">
 
 
     <th># SOLICITUD</th>
-  <th>VENDEDOR</th>
+
   <th>CLIENTE</th>
   <th>PROMOCION</th>
   <th>MATERIAL</th>
@@ -72,6 +73,7 @@
   <th>FECHA COTIZADA</th>
   <th>COTIZADOR</th>
   <th># COTIZACION</th>
+  <th>OT</th>
   <th>BOTON</th>
 </thead>
 {% for cotizacion in cotizaciones_completadas %}
@@ -82,7 +84,7 @@
     {% csrf_token %}
 
   <td name="numero">{{ cotizacion.num_solicitud }} </td>
-  <td>{{ cotizacion.vendedor }} </td>
+
   <td>{{ cotizacion.nombre_cliente }} </td>
   <td>{{ cotizacion.trabajo}}</td>
   <td>{{ cotizacion.material }} </td>
@@ -95,6 +97,18 @@
   <td>{{ cotizacion.cotizador }}</td>
   <td>{{ cotizacion.numero_cotizacion }}</td>
 
+
+  {% if user.categoria == "VEN" and cotizacion.solicitud_ot == "" %}
+  <td class="celda_boton"> <input type="submit" name="solicitar" value="Solicitar OT" class="btn btn-danger"></td>
+  {% elif cotizacion.solicitud_ot == "" %}
+  <td>Sin solicitud</td>
+  {% else %}
+  {% if cotizacion.num_ot_relacionada != "" %}
+  <td>OT #{{ cotizacion.num_ot_relacionada }}</td>
+  {% else %}
+  <td>Solicitud OT #{{ cotizacion.solicitud_ot }}</td>
+  {% endif %}
+  {% endif %}
   <td class="celda_boton"> <input type="submit" name="ver" value="ver cotizacion" class="btn btn-primary"></td>
   <input type="hidden" name="cot_ver" value="{{ cotizacion.num_solicitud }}">
   </tr>
@@ -112,22 +126,33 @@
 
 
 <div class="pagination" >
+  <form enctype="multipart/form-data" method="POST">
+{% csrf_token %}
 
     <span class="step-links">
         {% if cotizaciones_completadas.has_previous %}
-            <a href="?page=1"> <button type="button" class="btn btn-primary">primera</button></a>
-            <a href="?page={{ cotizaciones_completadas.previous_page_number }}"><button type="button" class="btn btn-primary">anterior</button></a>
+
+            <input type="submit" name="boton" value="anterior" class="btn btn-primary">
+            <input type="hidden" name="pagina_anterior" value={{ cotizaciones_completadas.previous_page_number }}>
         {% endif %}
 
         <span class="current" style="font-weight:bold">
             Pagina {{ cotizaciones_completadas.number }} de {{ cotizaciones_completadas.paginator.num_pages }}
         </span>
-
+        <input type="hidden" name="desde" value={{ desde }}>
+        <input type="hidden" name="hasta" value={{ hasta }}>
+        <input type="hidden" name="tipo_busqueda" value="{{ tipo_busqueda }}">
+        <input type="hidden" name="busqueda" value="{{ busqueda }}">
         {% if cotizaciones_completadas.has_next %}
-            <a href="?page={{ cotizaciones_completadas.next_page_number }}"><button type="button" class="btn btn-primary">siguiente</button></a>
-            <a href="?page={{ cotizaciones_completadas.paginator.num_pages }}"><button type="button" class="btn btn-primary">ultima</button></a>
-        {% endif %}
 
+
+            <input type="hidden" name="pagina_siguiente" value={{ cotizaciones_completadas.next_page_number }}>
+
+
+            <input type="submit" name="boton" value="siguiente" class="btn btn-primary">
+
+        {% endif %}
+        </form>
     </span>
 </div>
 </div>
@@ -324,9 +349,9 @@
   <input type="submit" name="regresar" value="REGRESAR" class="btn btn-primary" >
   {% if user.categoria == "VEN" %}
   <form action="{% url 'solicitud' %}">
+    {% csrf_token %}
 
-
-  <input type="submit" name="reutilizar" value="REUTILIZAR" class="btn btn-danger" onclick="{% url 'solicitud' %}">
+  <input type="submit" name="solicitar" value="Solicitar OT" class="btn btn-danger">
   </form>
 {% endif %}
 </form>

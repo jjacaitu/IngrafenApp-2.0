@@ -2,111 +2,116 @@
 {% block content %}
 {% load staticfiles %}
 <div class="container">
-  {% if user.categoria == "ADM" %}
+  {% if user.categoria != "ADM" %}
+
+  <h2>USTED NO TIENE ACCESO A ESTA PAGINA</h2>
+
+  {% else %}
+
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
-  <input type="text" id="parametro" name="parametro" value="" style="display:none" placeholder="Buscar por:">
-  <select id="cl" name="cl" style="display:none">
-    {% for clientes in clientes_creados %}
-    <option value="{{ clientes.nombre }}">{{ clientes.nombre }}</option>
-{% endfor %}
-  </select>
-  <select id="tr" class="opciones_trabajos" name="tr" style="display:none">
-    {% for trabajos in trabajos_creados %}
-    <option value="{{ trabajos.trabajo }}">{{ trabajos.trabajo }}</option>
-{% endfor %}
-  </select>
-  <select id="cot" class="cotizadores" name="cot" style="display:none">
-    {% for cotizador in cotizadores %}
-    <option value="{{ cotizador.username }}">{{ cotizador.username }}</option>
-{% endfor %}
-  </select>
-  <select id="ven" class="vendedores" name="ven" style="display:none">
-    {% for vendedor in vendedores %}
-    <option value="{{ vendedor.username }}">{{ vendedor.username }}</option>
-{% endfor %}
-  </select>
-  <select  class="seleccion" name="seleccion" onchange="filtros_busqueda(this)">
-    <option value="Todo">Todo</option>
-    <option value="Cliente">Cliente</option>
-    <option value="Trabajo">Tipo de trabajo</option>
-
-    <option value="Promocion">Nombre de promocion</option>
-    {% if user.categoria == "ADM" %}
-    <option value="Vendedor">Vendedor</option>
-
-    {% endif %}
-
-
-
-  </select>
-  <select class="" name="tipo" style="display:initial">
-    <option id="totales" value="solo_totales">Solo totales</option>
-    <option id="b_por_cliente"value="por_cliente">Por cliente</option>
-    <option id="b_por_trabajo"value="por_tipo_trabajo">Por tipo de trabajo</option>
-
-  </select>
 
 
 
 
+<p style="text-align:center">
   <label for="desde">DESDE:</label>
 
   <input type="date" name="desde" value="">
   <label for="hasta">HASTA:</label>
   <input type="date" name="hasta" value="">
-  <input type="submit" name="buscar" value="BUSCAR" class="btn btn-primary">
-  {% else %}
-  <h2>USTED NO TIENE ACCESO A ESTA PAGINA</h2>
+  <input type="submit" name="buscar" value="BUSCAR" class="btn btn-primary"></p>
+
 </div>
-{% endif %}
 
+{% if  buscar == "sin busqueda" %}
 <p>{{texto_busqueda| linebreaks}}</p>
-<table class="table table-bordered table-striped">
-<thead class="thead-dark">
-  <th>Usuario</th>
-  <th>{{header}}</th>
-  <th>Tiempo promedio</th>
+<div class="container">
 
-  <th>cantidad</th>
+
+<table class="table table-bordered table-striped w-auto">
+<thead class="thead-dark">
+  <th colspan="2"></th>
+  <th colspan="3" style="text-align:center">Cotizaciones</th>
+  <th colspan="3" style="text-align:center">Ordenes</th>
+  <th colspan="2" style="text-align:center">Ratio % cotizaciones/ordenes</th>
+
+
+</thead>
+<thead class="thead-dark">
+  <th>Categoria</th>
+  <th>Usuario</th>
+  <th>Hoy</th>
+  <th>Mes</th>
+  <th>Total año</th>
+
+  <th>Hoy</th>
+  <th>Mes</th>
+  <th>Total año</th>
+  <th>Mes en curso</th>
+  <th>Año en curso</th>
 </thead>
 <tbody>
 
 
-{% for usuario,todos in resultados_dict.items %}
+
 <tr >
-  <td rowspan="{{todos|length}}">{{usuario}}</td>
+  <td rowspan="{{cot_dict|length}}">COTIZADOR</td>
+{% for usuario,todos in cot_dict.items %}
 
-  {% for trabajos,items in todos.items %}
-  <td>{{trabajos}}</td>
-  {% for key, valor in items.items %}
-  <td>{{valor}}</td>
-
+  <td>{{usuario}}</td>
+  {% for rango,cantidad in todos.items %}
+  <td>{{ cantidad }}</td>
 
 
   {% endfor %}
   </tr>
+  {% endfor %}
 
-  {% endfor %}
-  {% endfor %}
+  <tr >
+    <td rowspan="{{ven_dict|length}}">VENDEDOR</td>
+  {% for usuario,todos in ven_dict.items %}
+
+    <td>{{usuario}}</td>
+    {% for rango,cantidad in todos.items %}
+    <td>{{ cantidad }}</td>
+
+
+    {% endfor %}
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
+</div>
 {% if texto_busqueda %}
 {% else %}
 <div class="container">
 
 <h2>Cotizaciones por cotizador</h2>
-<canvas id="myChart" width="100" height="100"></canvas></div>
+<canvas id="myChart" height="100"></canvas></div>
 
 <div class="container">
 
 <h2>Cotizaciones por vendedor</h2>
-<canvas id="myChart2" width="100" height="100"></canvas></div>
+<canvas id="myChart2" height="100"></canvas></div>
+
+<div class="container">
+
+<h2>Ordenes por cotizador</h2>
+<canvas id="myChart3" height="100"></canvas></div>
+
+<div class="container">
+
+<h2>Ordenes por vendedor</h2>
+<canvas id="myChart4" height="100"></canvas></div>
+
 {% endif %}
 <script>
 var datos = {{ datas }};
 var labels_names = {{ labels_names|safe }};
 var titles = {{ titles|safe }};
+var datos_ot = {{ datas_ot }};
+var titles_ot = {{ titles_ot|safe }};
 var colors = ["#ede50b","#060c84","#77040e","#026017","#09bc31","#e06608","#4b8ffc","#5e29c6","#c62981","#fff200","#7cff02","#00ffff"]
 function getRandomArbitrary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
@@ -122,6 +127,7 @@ function addData(chart, label, color, data) {
 }
 
 var ctx = document.getElementById("myChart").getContext('2d');
+
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -143,6 +149,9 @@ var myChart = new Chart(ctx, {
             borderWidth: 1
         }],
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+
       scales: {
           xAxes: [{
               stacked: true
@@ -157,6 +166,8 @@ var myChart = new Chart(ctx, {
 var datos_ventas = {{ datas_vendedores }};
 
 var titles_ventas = {{ titles_vendedores|safe }};
+
+
 
 var ctx2 = document.getElementById("myChart2").getContext('2d');
 var myChart2 = new Chart(ctx2, {
@@ -180,6 +191,83 @@ var myChart2 = new Chart(ctx2, {
             borderWidth: 1
         }],
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
+
+
+var ctx3 = document.getElementById("myChart3").getContext('2d');
+var myChart3 = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles_ot[0],
+            data: datos_ot[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
+
+var datos_ventas_ot = {{ datas_vendedores_ot }};
+
+var titles_ventas_ot = {{ titles_vendedores_ot|safe }};
+
+var ctx4 = document.getElementById("myChart4").getContext('2d');
+var myChart4 = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles_ventas_ot[0],
+            data: datos_ventas_ot[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
       scales: {
           xAxes: [{
               stacked: true
@@ -192,17 +280,77 @@ var myChart2 = new Chart(ctx2, {
 }});
 
 for (i = 1; i < titles.length; i++) {
-  addData(myChart, titles[i], colors[getRandomArbitrary(0,12)], datos[i]);
+  addData(myChart, titles[i], colors.pop(getRandomArbitrary(0,12)), datos[i]);
 
 }
 
 for (i = 1; i < titles_ventas.length; i++) {
-  addData(myChart2, titles_ventas[i], colors[getRandomArbitrary(0,12)], datos_ventas[i]);
+  addData(myChart2, titles_ventas[i], colors.pop(getRandomArbitrary(0,12)), datos_ventas[i]);
+
+}
+
+for (i = 1; i < titles_ventas_ot.length; i++) {
+  addData(myChart4, titles_ventas_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_ventas_ot[i]);
+
+}
+
+for (i = 1; i < titles_ot.length; i++) {
+  addData(myChart3, titles_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_ot[i]);
 
 }
 
 
 </script>
 
+{% else %}
 
+<p>{{texto_busqueda| linebreaks}}</p>
+<div class="container">
+
+
+<table class="table table-bordered table-striped w-auto">
+
+<thead class="thead-dark">
+  <th>Categoria</th>
+  <th>Usuario</th>
+  <th>Cotizaciones</th>
+  <th>Ordenes</th>
+  <th>Ratio % Ordenes/Cotizaciones</th>
+
+</thead>
+<tbody>
+
+
+
+<tr >
+  <td rowspan="{{cot_dict|length}}">COTIZADOR</td>
+{% for usuario,todos in cot_dict.items %}
+
+  <td>{{usuario}}</td>
+  {% for rango,cantidad in todos.items %}
+  <td>{{ cantidad }}</td>
+
+
+  {% endfor %}
+  </tr>
+  {% endfor %}
+
+  <tr >
+    <td rowspan="{{ven_dict|length}}">VENDEDOR</td>
+  {% for usuario,todos in ven_dict.items %}
+
+    <td>{{usuario}}</td>
+    {% for rango,cantidad in todos.items %}
+    <td>{{ cantidad }}</td>
+
+
+    {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% endif %}
+{% endif %}
 {% endblock %}
