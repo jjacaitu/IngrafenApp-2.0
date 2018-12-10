@@ -57,7 +57,7 @@ def ordenes_sin_fecha(request):
         buscar = True
         numero_a_ver = request.POST.get("numero")
         ordenes_por_fecha = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
-        orden_existentes = OrdenesSolicitadas.objects.all().filter(num_ot_relacionada=numero_a_ver)
+        orden_existentes = OrdenesSolicitadas.objects.all().filter(num_solicitud_ot=numero_a_ver)
         hoy = datetime.today().date()
         return render(request, "ordenes_sin_fecha.html",{"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
 
@@ -155,7 +155,7 @@ def ordenes_en_proceso(request):
         buscar = True
         numero_a_ver = request.POST.get("numero")
 
-        orden_existentes = OrdenesSolicitadas.objects.all().filter(num_ot_relacionada=numero_a_ver)
+        orden_existentes = OrdenesSolicitadas.objects.all().filter(num_solicitud_ot=numero_a_ver)
         return render(request, "ordenes_en_proceso.html",{"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
 
 
@@ -169,7 +169,7 @@ def ordenes_aperturadas(request):
     cotizaciones_existentes = CotizacionesSolicitadas.objects.all().filter(cotizador__exact="")
     ordenes_proceso = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
     ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
-    clientes_creados = models.Clientes.objects.all().order_by("nombre")
+    clientes_creados = models.Clientes_ot.objects.all().order_by("nombre_razon_social")
     trabajos_creados = models.TipoDeTrabajo.objects.all().order_by("trabajo")
     cotizadores = models.Usuarios.objects.all().filter(categoria="COT").order_by("username")
     vendedores = models.Usuarios.objects.all().filter(categoria="VEN").order_by("username")
@@ -190,13 +190,13 @@ def ordenes_aperturadas(request):
             if request.POST.get("tipo_busqueda") == "Trabajo":
                 tipo_busqueda = "Trabajo"
                 busqueda = request.POST.get("busqueda")
-                ordenes = OrdenesSolicitadas.objects.all().filter(tipo_trabajo_ot=request.POST.get("busqueda")).filter(vendedor_ot=request.user).filter(fecha_completada_ot_ot__range=[desde,hasta]).exclude(cotizador__exact="").order_by("-fecha_solicitada_ot")
+                ordenes = OrdenesSolicitadas.objects.all().filter(tipo_trabajo_ot=request.POST.get("busqueda")).filter(vendedor_ot=request.user).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador__exact="").order_by("-fecha_solicitada_ot")
             elif request.POST.get("tipo_busqueda") == "Cliente":
                 print(request.POST.get("cl"))
                 tipo_busqueda = "Cliente"
                 busqueda = request.POST.get("busqueda")
-                b = models.Clientes.objects.get(nombre=request.POST.get("busqueda"))
-                ordenes = b.client.all().filter(fecha_completada_ot_ot__range=[str(desde),str(hasta)]).exclude(cotizador_ot__exact="").filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
+                b = models.Clientes_ot.objects.get(nombre_razon_social=request.POST.get("busqueda"))
+                ordenes = b.client_ot.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
 
 
             elif request.POST.get("tipo_busqueda") == "Todo":
@@ -220,7 +220,7 @@ def ordenes_aperturadas(request):
                 tipo_busqueda = "Promocion"
                 busqueda = request.POST.get("busqueda")
         else:
-            if request.POST.get("tipo_busqueda") == "trabajo_ot":
+            if request.POST.get("tipo_busqueda") == "Trabajo":
                 tipo_busqueda = "trabajo_ot"
                 busqueda = request.POST.get("busqueda")
                 ordenes = OrdenesSolicitadas.objects.all().filter(tipo_trabajo_ot=request.POST.get("busqueda")).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador__exact="").order_by("-fecha_solicitada_ot")
@@ -228,8 +228,8 @@ def ordenes_aperturadas(request):
                 print(request.POST.get("cl"))
                 tipo_busqueda = "Cliente"
                 busqueda = request.POST.get("busqueda")
-                b = models.Clientes.objects.get(nombre=request.POST.get("busqueda"))
-                ordenes = b.client.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
+                b = models.Clientes_ot.objects.get(nombre_razon_social=request.POST.get("busqueda"))
+                ordenes = b.client_ot.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
 
 
             elif request.POST.get("tipo_busqueda") == "Todo":
@@ -289,6 +289,10 @@ def ordenes_aperturadas(request):
         return render(request,"ordenes_aperturadas.html",{"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes,"ordenes_completadas":ordenes_completadas,"ver":ver,"clientes_creados":clientes_creados,"trabajos_creados":trabajos_creados,"cotizadores":cotizadores,"vendedores":vendedores, "cotizaciones_existentes":cotizaciones_existentes})
 
     elif request.method == "GET":
+        if request.user.categoria == "VEN":
+            ordenes = OrdenesSolicitadas.objects.all().filter(vendedor_ot=request.user).exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
+        else:
+            ordenes = OrdenesSolicitadas.objects.all().exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
         ordenes = OrdenesSolicitadas.objects.all().exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
         paginator = Paginator(ordenes,10)
         print("aqui")
@@ -310,8 +314,8 @@ def ordenes_aperturadas(request):
                 print("SIRVE " + request.POST.get("parametro"))
                 if request.POST.get("seleccion") == "Cliente":
                     print(request.POST.get("cl"))
-                    b = models.Clientes.objects.get(nombre=request.POST.get("cl"))
-                    ordenes = b.client.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).exclude(cotizador__exact="").filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
+                    b = models.Clientes_ot.objects.get(nombre_razon_social=request.POST.get("cl"))
+                    ordenes = b.client_ot.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
                     tipo_busqueda = "Cliente"
                     busqueda = request.POST.get("cl")
 
@@ -319,16 +323,16 @@ def ordenes_aperturadas(request):
                     print("TODO")
                     tipo_busqueda = "Todo"
                     busqueda = ""
-                    ordenes = OrdenesSolicitadas.objects.filter(fecha_completada_ot__range=[str(desde),str(hasta)]).exclude(cotizador__exact="").filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
+                    ordenes = OrdenesSolicitadas.objects.filter(fecha_completada_ot__range=[str(desde),str(hasta)]).filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
 
                 elif request.POST.get("seleccion") == "Trabajo":
                     tipo_busqueda = "Trabajo"
                     busqueda = request.POST.get("tr")
-                    ordenes = OrdenesSolicitadas.objects.all().filter(tipo_trabajo=request.POST.get("tr")).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador__exact="").filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
+                    ordenes = OrdenesSolicitadas.objects.all().filter(tipo_trabajo_ot=request.POST.get("tr")).filter(fecha_completada_ot__range=[desde,hasta]).filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
                 elif request.POST.get("seleccion") == "Vendedor":
                     tipo_busqueda = "Vendedor"
                     busqueda = request.POST.get("ven")
-                    ordenes = OrdenesSolicitadas.objects.all().filter(vendedor_ot=request.POST.get("ven")).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador__exact="").order_by("-fecha_solicitada_ot")
+                    ordenes = OrdenesSolicitadas.objects.all().filter(vendedor_ot=request.POST.get("ven")).filter(fecha_completada_ot__range=[desde,hasta]).order_by("-fecha_solicitada_ot")
                 elif request.POST.get("seleccion") == "Cotizador":
                     tipo_busqueda = "Cotizador"
                     busqueda = request.POST.get("cot")
@@ -346,7 +350,7 @@ def ordenes_aperturadas(request):
                     busqueda = request.POST.get("parametro")
                     ordenes = OrdenesSolicitadas.objects.all().filter(trabajo_ot__istartswith=request.POST.get("parametro")).filter(fecha_completada_ot__range=[desde,hasta]).filter(vendedor_ot=request.user).order_by("-fecha_solicitada_ot")
                 print("si")
-                clientes_creados = models.Clientes.objects.all().order_by("nombre")
+                clientes_creados = models.Clientes_ot.objects.all().order_by("nombre_razon_social")
                 trabajos_creados = models.TipoDeTrabajo.objects.all().order_by("trabajo")
                 cotizadores = models.Usuarios.objects.all().filter(categoria="COT").order_by("username")
                 vendedores = models.Usuarios.objects.all().filter(categoria="VEN").order_by("username")
@@ -369,8 +373,8 @@ def ordenes_aperturadas(request):
                 print("SIRVE " + request.POST.get("parametro"))
                 if request.POST.get("seleccion") == "Cliente":
                     print(request.POST.get("cl"))
-                    b = models.Clientes.objects.get(nombre=request.POST.get("cl"))
-                    ordenes = b.client.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
+                    b = models.Clientes_ot.objects.get(nombre_razon_social=request.POST.get("cl"))
+                    ordenes = b.client_ot.all().filter(fecha_completada_ot__range=[str(desde),str(hasta)]).exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
                     tipo_busqueda = "Cliente"
                     busqueda = request.POST.get("cl")
 
@@ -427,7 +431,10 @@ def ordenes_aperturadas(request):
 
     if request.method == "POST" and request.POST.get("regresar") == "REGRESAR":
         ver = False
-        ordenes = OrdenesSolicitadas.objects.all().exclude(cotizador_ot__exact="")
+        if request.user.categoria == "VEN":
+            ordenes = OrdenesSolicitadas.objects.all().filter(vendedor_ot=request.user).exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
+        else:
+            ordenes = OrdenesSolicitadas.objects.all().exclude(cotizador_ot__exact="").order_by("-fecha_solicitada_ot")
         paginator = Paginator(ordenes,10)
         page = request.GET.get('page')
         ordenes_completadas = paginator.get_page(page)
@@ -548,14 +555,10 @@ def solicitud_ot(request):
             orden_utilizar.descripcion_material_ot = request.session['descripcion_material']
             orden_utilizar.medida_alto_ot = request.session['medida_alto']
             orden_utilizar.medida_ancho_ot = request.session['medida_ancho']
-            if request.POST.get("nombre_pantonest1"):
-                orden_utilizar.impresion_tiro_ot = request.session['impresion_tiro'] + " Colores: " +  request.POST.get("nombre_pantonest1")
-            else:
-                orden_utilizar.impresion_tiro_ot = request.session['impresion_tiro']
-            if request.POST.get("nombre_pantonesr1"):
-                orden_utilizar.impresion_retiro_ot = request.session['impresion_retiro'] + " Colores: " +  request.POST.get("nombre_pantonesr1")
-            else:
-                orden_utilizar.impresion_retiro_ot = request.session['impresion_retiro']
+
+            orden_utilizar.impresion_tiro_ot = request.session['impresion_tiro']
+
+            orden_utilizar.impresion_retiro_ot = request.session['impresion_retiro']
             orden_utilizar.uv_ot = request.session['uv']
             orden_utilizar.laminado_ot = request.session['laminado']
             orden_utilizar.troquelado_ot = request.session['troquelado']
@@ -660,7 +663,7 @@ def solicitud_ot(request):
             if cliente_encontrado.desactivado == True:
                 return HttpResponseRedirect(reverse("error01"))
             print("AQUI",orden_encontrada)
-            if orden_encontrada.detalles_ot != "":
+            if orden_encontrada.detalles_ot != "" and orden_encontrada.detalles_ot != None:
                 detalle = orden_encontrada.detalles_ot.split("\n")
                 ver_cinta = detalle[0].split()
 
@@ -679,7 +682,7 @@ def solicitud_ot(request):
 
 
 
-            if orden_encontrada.numero_cotizacion_ot != "":
+            if orden_encontrada.numero_cotizacion_ot != "" and orden_encontrada.numero_cotizacion_ot != None and orden_encontrada.detalles_ot != None:
                 detalle = orden_encontrada.detalles_ot.split("\n")
                 texto_cot_papyrus = detalle[-1].split()
                 if len(texto_cot_papyrus) != 0:
@@ -879,8 +882,11 @@ def solicitud_ot(request):
             stock.descripcion_material_ot = request.POST.get("descripcion")
             stock.medida_alto_ot = request.POST.get("alto1")
             stock.medida_ancho_ot = request.POST.get("ancho1")
-            stock.impresion_tiro_ot = request.POST.get("num_pantonest1") + " " + request.POST.get("impresiont1")
-            stock.impresion_retiro_ot = request.POST.get("num_pantonesr1") + " " + request.POST.get("impresionr1")
+            stock.impresion_tiro_ot = str(request.POST.get("num_pantonest1")) + " " + str(request.POST.get("impresiont1"))
+            if request.POST.get("impresionr1") == None:
+                stock.impresion_retiro_ot = "Sin impresion"
+            else:
+                stock.impresion_retiro_ot = str(request.POST.get("num_pantonesr1")) + " " + str(request.POST.get("impresionr1"))
 
             stock.uv_ot = request.POST.get("uv1")
             stock.laminado_ot = request.POST.get("laminado1")
@@ -894,7 +900,10 @@ def solicitud_ot(request):
             stock.medida_alto_2_ot = request.POST.get("alto2")
             stock.medida_ancho_2_ot = request.POST.get("ancho2")
             stock.impresion_tiro2_ot = str(request.POST.get("num_pantonest2")) + " " + str(request.POST.get("impresiont2"))
-            stock.impresion_retiro2_ot = str(request.POST.get("num_pantonesr2")) + " " + str(request.POST.get("impresionr2"))
+            if request.POST.get("impresionr2") == None:
+                stock.impresion_retiro2_ot = "Sin impresion"
+            else:
+                stock.impresion_retiro2_ot = str(request.POST.get("num_pantonesr2")) + " " + str(request.POST.get("impresionr2"))
             stock.uv2_ot = request.POST.get("uv2")
             stock.laminado2_ot = request.POST.get("laminado2")
             if request.POST.get("troquel2"):
@@ -906,7 +915,10 @@ def solicitud_ot(request):
             stock.medida_alto_3_ot = request.POST.get("alto3")
             stock.medida_ancho_3_ot = request.POST.get("ancho3")
             stock.impresion_tiro3_ot = str(request.POST.get("num_pantonest3")) + " " + str(request.POST.get("impresiont3"))
-            stock.impresion_retiro3_ot = str(request.POST.get("num_pantonesr3")) + " " + str(request.POST.get("impresionr3"))
+            if request.POST.get("impresionr3") == None:
+                stock.impresion_retiro3_ot = "Sin impresion"
+            else:
+                stock.impresion_retiro3_ot = str(request.POST.get("num_pantonesr3")) + " " + str(request.POST.get("impresionr3"))
             stock.uv3_ot = request.POST.get("uv3")
             stock.laminado3_ot = request.POST.get("laminado3")
             if request.POST.get("troquel3"):
@@ -919,7 +931,10 @@ def solicitud_ot(request):
             stock.medida_alto_4_ot = request.POST.get("alto4")
             stock.medida_ancho_4_ot = request.POST.get("ancho4")
             stock.impresion_tiro4_ot = str(request.POST.get("num_pantonest4")) + " " + str(request.POST.get("impresiont4"))
-            stock.impresion_retiro4_ot = str(request.POST.get("num_pantonesr4")) + " " + str(request.POST.get("impresionr4"))
+            if request.POST.get("impresionr4") == None:
+                stock.impresion_retiro4_ot = "Sin impresion"
+            else:
+                stock.impresion_retiro4_ot = str(request.POST.get("num_pantonesr4")) + " " + str(request.POST.get("impresionr4"))
             stock.uv4_ot = request.POST.get("uv4")
             stock.laminado4_ot = request.POST.get("laminado4")
             if request.POST.get("troquel4"):
@@ -932,7 +947,10 @@ def solicitud_ot(request):
             stock.medida_alto_5_ot = request.POST.get("alto5")
             stock.medida_ancho_5_ot = request.POST.get("ancho5")
             stock.impresion_tiro5_ot = str(request.POST.get("num_pantonest5")) + " " + str(request.POST.get("impresiont5"))
-            stock.impresion_retiro5_ot = str(request.POST.get("num_pantonesr5")) + " " + str(request.POST.get("impresionr5"))
+            if request.POST.get("impresionr5") == None:
+                stock.impresion_retiro5_ot = "Sin impresion"
+            else:
+                stock.impresion_retiro5_ot = str(request.POST.get("num_pantonesr5")) + " " + str(request.POST.get("impresionr5"))
             stock.uv5_ot = request.POST.get("uv5")
             stock.laminado5_ot = request.POST.get("laminado5")
             if request.POST.get("troquel5"):
@@ -987,8 +1005,8 @@ def solicitud_ot(request):
             stock2.descripcion_material = request.POST.get("descripcion")
             stock2.medida_alto = request.POST.get("alto1")
             stock2.medida_ancho = request.POST.get("ancho1")
-            stock2.impresion_tiro = request.POST.get("num_pantonest1") + " " + request.POST.get("impresiont1")
-            stock2.impresion_retiro = request.POST.get("num_pantonesr1") + " " + request.POST.get("impresionr1")
+            stock2.impresion_tiro = str(request.POST.get("num_pantonest1")) + " " + str(request.POST.get("impresiont1"))
+            stock2.impresion_retiro = str(request.POST.get("num_pantonesr1")) + " " + str(request.POST.get("impresionr1"))
 
             stock2.solicitud_ot = numero_solicitud.num_solicitud_ot
 
@@ -1136,7 +1154,7 @@ def error01(request):
     ordenes_proceso = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
     ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
     ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
-
+    request.session['tipo_trabajo'] = ""
 
 
 
@@ -1471,7 +1489,7 @@ def solicitud_cot(request):
         try:
             cotizacion_encontrada = models.CotizacionesSolicitadas.objects.get(num_solicitud = cot)
             print("AQUI",cotizacion_encontrada)
-            if cotizacion_encontrada.detalles != "":
+            if cotizacion_encontrada.detalles != "" and cotizacion_encontrada.detalles != None:
                 detalle = cotizacion_encontrada.detalles.split("\n")
                 ver_cinta = detalle[0].split()
 
@@ -1490,7 +1508,7 @@ def solicitud_cot(request):
 
 
 
-            if cotizacion_encontrada.numero_cotizacion != "":
+            if cotizacion_encontrada.numero_cotizacion != "" and cotizacion_encontrada.numero_cotizacion != None:
 
                 cotizacion_encontrada.detalles += "\n" + "Referencia COT PAPYRUS #" + str(cotizacion_encontrada.numero_cotizacion)
             data = {"nombre_cliente":cotizacion_encontrada.nombre_cliente,"trabajo":cotizacion_encontrada.trabajo,"cantidad":cotizacion_encontrada.cantidad}
@@ -1521,7 +1539,7 @@ def solicitud_cot(request):
             stock.impresion_tiro = request.POST.get("num_pantonest1") + " " + request.POST.get("impresiont1")
 
             if request.POST.get("impresionr1"):
-                stock.impresion_retiro = request.POST.get("num_pantonesr1") + " " + request.POST.get("impresionr1")
+                stock.impresion_retiro = str(request.POST.get("num_pantonesr1")) + " " + str(request.POST.get("impresionr1"))
 
             else:
                 stock.impresion_retiro = "Sin impresion"
@@ -1538,7 +1556,7 @@ def solicitud_cot(request):
             stock.medida_ancho_2 = request.POST.get("ancho2")
             stock.impresion_tiro2 = str(request.POST.get("num_pantonest2")) + " " + str(request.POST.get("impresiont2"))
             if request.POST.get("impresionr1"):
-                stock.impresion_retiro2 = request.POST.get("num_pantonesr2") + " " + request.POST.get("impresionr2")
+                stock.impresion_retiro2 = str(request.POST.get("num_pantonesr2")) + " " + str(request.POST.get("impresionr2"))
 
             else:
                 stock.impresion_retiro2 = "Sin impresion"
@@ -1554,7 +1572,7 @@ def solicitud_cot(request):
             stock.medida_ancho_3 = request.POST.get("ancho3")
             stock.impresion_tiro3 = str(request.POST.get("num_pantonest3")) + " " + str(request.POST.get("impresiont3"))
             if request.POST.get("impresionr3"):
-                stock.impresion_retiro3 = request.POST.get("num_pantonesr3") + " " + request.POST.get("impresionr3")
+                stock.impresion_retiro3 = str(request.POST.get("num_pantonesr3")) + " " + str(request.POST.get("impresionr3"))
 
             else:
                 stock.impresion_retiro3 = "Sin impresion"
@@ -1571,7 +1589,7 @@ def solicitud_cot(request):
             stock.medida_ancho_4 = request.POST.get("ancho4")
             stock.impresion_tiro4 = str(request.POST.get("num_pantonest4")) + " " + str(request.POST.get("impresiont4"))
             if request.POST.get("impresionr4"):
-                stock.impresion_retiro4 = request.POST.get("num_pantonesr4") + " " + request.POST.get("impresionr4")
+                stock.impresion_retiro4 = str(request.POST.get("num_pantonesr4")) + " " + str(request.POST.get("impresionr4"))
 
             else:
                 stock.impresion_retiro4 = "Sin impresion"
@@ -1588,7 +1606,7 @@ def solicitud_cot(request):
             stock.medida_ancho_5 = request.POST.get("ancho5")
             stock.impresion_tiro5 = str(request.POST.get("num_pantonest5")) + " " + str(request.POST.get("impresiont5"))
             if request.POST.get("impresionr1"):
-                stock.impresion_retiro5 = request.POST.get("num_pantonesr5") + " " + request.POST.get("impresionr5")
+                stock.impresion_retiro5 = str(request.POST.get("num_pantonesr5")) + " " + str(request.POST.get("impresionr5"))
 
             else:
                 stock.impresion_retiro5 = "Sin impresion"
@@ -2050,7 +2068,7 @@ def cotizaciones_completadas(request):
         return render(request,"cotizaciones_completadas.html",{"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes,"cotizaciones_completadas":cotizaciones_completadas,"ver":ver,"clientes_creados":clientes_creados,"trabajos_creados":trabajos_creados,"cotizadores":cotizadores,"vendedores":vendedores, "cotizaciones_existentes":cotizaciones_existentes})
 
     if request.method == "POST" and request.POST.get("reutilizar") == "REUTILIZAR":
-        cot = request.POST.get("cot_reutilizar")
+        cot = request.POST.get("cot_ver")
         request.session['cot'] = cot
 
         return HttpResponseRedirect(reverse('solicitud'))
@@ -2358,11 +2376,11 @@ def reportes(request):
             cot_dict[cotizador.username]["mes ot"] = models.OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact=cotizador.username).filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).count()
             cot_dict[cotizador.username]["año ot"] = models.OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact=cotizador.username).filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).count()
             try:
-                cot_dict[cotizador.username]["ratio mes"] = str(round(((OrdenesSolicitadas.objects.all().filter(cotizador_ot=cotizador.username).filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(cotizador=cotizador.username).filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count())),3)*100) + "%"
+                cot_dict[cotizador.username]["ratio mes"] = str(round((((OrdenesSolicitadas.objects.all().filter(cotizador_ot=cotizador.username).filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(cotizador=cotizador.username).filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count()))*100),2)) + "%"
             except ZeroDivisionError:
                 cot_dict[cotizador.username]["ratio mes"] = str(0.0) + "%"
             try:
-                cot_dict[cotizador.username]["ratio año"] = str(round(((OrdenesSolicitadas.objects.all().filter(cotizador_ot=cotizador.username).filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(cotizador=cotizador.username).filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count())),3)*100) + "%"
+                cot_dict[cotizador.username]["ratio año"] = str(round((((OrdenesSolicitadas.objects.all().filter(cotizador_ot=cotizador.username).filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(cotizador=cotizador.username).filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count()))*100),2)) + "%"
             except ZeroDivisionError:
                 cot_dict[cotizador.username]["ratio año"] = str(0.0) + "%"
         cot_dict["Total"] = {}
@@ -2373,11 +2391,11 @@ def reportes(request):
         cot_dict["Total"]["mes ot"] = models.OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count()
         cot_dict["Total"]["año ot"] = models.OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count()
         try:
-            cot_dict["Total"]["ratio mes"] = str(round(((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count())),2)*100) + "%"
+            cot_dict["Total"]["ratio mes"] = str(round((((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count()))*100), 2)) + "%"
         except ZeroDivisionError:
             cot_dict["Total"]["ratio mes"] = str(0.0) + "%"
         try:
-            cot_dict["Total"]["ratio año"] = str(round(((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count())),2)*100) + "%"
+            cot_dict["Total"]["ratio año"] = str(round((((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count()))*100), 2)) + "%"
         except ZeroDivisionError:
             cot_dict["Total"]["ratio año"] = str(0.0) + "%"
         for vendedor in vendedores:
@@ -2389,11 +2407,11 @@ def reportes(request):
             ven_dict[vendedor.username]["mes_ot"] = OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count()
             ven_dict[vendedor.username]["año_ot"] = OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count()
             try:
-                ven_dict[vendedor.username]["ratio mes"] = str(round(((OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(vendedor=vendedor.username).filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count())),2)*100) + "%"
+                ven_dict[vendedor.username]["ratio mes"] = str(round((((OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(vendedor=vendedor.username).filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count()))*100),2)) + "%"
             except ZeroDivisionError:
                 ven_dict[vendedor.username]["ratio mes"] = str(0.0) + "%"
             try:
-                ven_dict[vendedor.username]["ratio año"] = str(round(((OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(vendedor=vendedor.username).filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count())),2)*100) + "%"
+                ven_dict[vendedor.username]["ratio año"] = str(round((((OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(vendedor=vendedor.username).filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count()))*100),2)) + "%"
             except ZeroDivisionError:
                 ven_dict[vendedor.username]["ratio año"] = str(0.0) + "%"
         ven_dict["Total"] = {}
@@ -2404,11 +2422,11 @@ def reportes(request):
         ven_dict["Total"]["mes ot"] = models.OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count()
         ven_dict["Total"]["año ot"] = models.OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count()
         try:
-            ven_dict["Total"]["ratio mes"] = str(round(((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count())),2)*100) + "%"
+            ven_dict["Total"]["ratio mes"] = str(round((((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_mes,(primero_mes + relativedelta(months=+1))]).exclude(cotizador="").count()))*100),2)) + "%"
         except ZeroDivisionError:
             ven_dict["Total"]["ratio mes"] = str(0.0) + "%"
         try:
-            ven_dict["Total"]["ratio año"] = str(round(((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count())),2)*100) + "%"
+            ven_dict["Total"]["ratio año"] = str(round((((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[primero_año,(primero_año + relativedelta(years=+1))]).exclude(cotizador="").count()))*100),2)) + "%"
         except ZeroDivisionError:
             ven_dict["Total"]["ratio año"] = str(0.0) + "%"
 
@@ -2452,7 +2470,7 @@ def reportes(request):
 
             cot_dict[cotizador.username]["ot"] = models.OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact=cotizador.username).filter(fecha_completada_ot__range=[desde,hasta]).count()
             try:
-                cot_dict[cotizador.username]["ratio"] = str(round(((OrdenesSolicitadas.objects.all().filter(cotizador_ot=cotizador.username).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(cotizador=cotizador.username).filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count())),2)*100) + "%"
+                cot_dict[cotizador.username]["ratio"] = str(round((((OrdenesSolicitadas.objects.all().filter(cotizador_ot=cotizador.username).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(cotizador=cotizador.username).filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count()))*100),2)) + "%"
             except ZeroDivisionError:
                 cot_dict[cotizador.username]["ratio"] = str(0.0) + "%"
 
@@ -2462,7 +2480,7 @@ def reportes(request):
 
         cot_dict["Total"]["ot"] = models.OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count()
         try:
-            cot_dict["Total"]["ratio"] = str(round(((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count())),2)*100) + "%"
+            cot_dict["Total"]["ratio"] = str(round((((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count()))*100), 2)) + "%"
         except ZeroDivisionError:
             cot_dict["Total"]["ratio"] = str(0.0) + "%"
 
@@ -2474,7 +2492,7 @@ def reportes(request):
             ven_dict[vendedor.username]["ot"] = OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count()
 
             try:
-                ven_dict[vendedor.username]["ratio"] = str(round(((OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(vendedor=vendedor.username).filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count())),2)*100) + "%"
+                ven_dict[vendedor.username]["ratio"] = str(round(((OrdenesSolicitadas.objects.all().filter(vendedor_ot=vendedor.username).filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(vendedor=vendedor.username).filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count())), 2)*100) + "%"
             except ZeroDivisionError:
                 ven_dict[vendedor.username]["ratio"] = str(0.0) + "%"
         ven_dict["Total"] = {}
@@ -2484,7 +2502,7 @@ def reportes(request):
         ven_dict["Total"]["ot"] = models.OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count()
 
         try:
-            ven_dict["Total"]["ratio"] = str(round(((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count())),2)*100) + "%"
+            ven_dict["Total"]["ratio"] = str(round((((OrdenesSolicitadas.objects.all().filter(fecha_completada_ot__range=[desde,hasta]).exclude(cotizador_ot="").count())/(CotizacionesSolicitadas.objects.all().filter(fecha_completada__range=[desde,hasta]).exclude(cotizador="").count()))*100),2)) + "%"
         except ZeroDivisionError:
             ven_dict["Total"]["ratio"] = str(0.0) + "%"
 

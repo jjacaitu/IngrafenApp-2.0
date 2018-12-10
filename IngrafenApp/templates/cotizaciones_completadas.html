@@ -344,15 +344,15 @@
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
 
-<input type="hidden" name="cot_reutilizar" value="{{ cotizacion.num_solicitud }}">
+<input type="hidden" name="cot_ver" value="{{ cotizacion.num_solicitud }}">
 {% endfor %}
   <input type="submit" name="regresar" value="REGRESAR" class="btn btn-primary" >
-  {% if user.categoria == "VEN" %}
-  <form action="{% url 'solicitud' %}">
-    {% csrf_token %}
+  <input type="submit" name="reutilizar" value="REUTILIZAR" class="btn btn-success" >
 
+
+ {% if user.categoria == "VEN" and cotizacion.solicitud_ot == "" %}
   <input type="submit" name="solicitar" value="Solicitar OT" class="btn btn-danger">
-  </form>
+
 {% endif %}
 </form>
 </div>

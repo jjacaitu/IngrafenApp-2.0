@@ -68,7 +68,7 @@
   {% for cotizacion in cotizacion_existentes %}
   <h2>Solicitud de cotizacion #{{cotizacion.num_solicitud}}</h2>
   {% if user.categoria == "ADM" or user.categoria == "COT" %}
-  <h3 style="background-color:#ce5252;text-align:left;color:white">Cotizador asignado: {{cotizacion.procesado_por}}</h3>
+  <h3 style="background-color:#ce5252;text-align:left;color:white">Cotizador asignado: {{cotizacion.procesado_por}}  Vendedor: {{ cotizacion.vendedor }} </h3>
   {% endif %}
   <table class="table table-bordered solido">
 
@@ -128,7 +128,7 @@
 
   </tr>
 
-{% if cotizacion.material2 != "" and cotizacion.material2 != "None" %}
+{% if cotizacion.material2 != "" and cotizacion.material2 != "None" and cotizacion.material2 != None %}
 <tr>
   <td> {{ cotizacion.material2 }} </td>
   <td> {{ cotizacion.descripcion_material2 }} </td>
@@ -152,7 +152,7 @@
 </tr>
 {% endif %}
 
-{% if cotizacion.material3 != "" and cotizacion.material3 != "None"  %}
+{% if cotizacion.material3 != "" and cotizacion.material3 != "None" and cotizacion.material3 != None %}
 <tr>
   <td> {{ cotizacion.material3 }} </td>
   <td> {{ cotizacion.descripcion_material3 }} </td>
@@ -176,7 +176,7 @@
 </tr>
 {% endif %}
 
-{% if cotizacion.material4 != "" and cotizacion.material4 != "None" %}
+{% if cotizacion.material4 != "" and cotizacion.material4 != "None" and cotizacion.material4 != None %}
 <tr>
   <td> {{ cotizacion.material4 }} </td>
   <td> {{ cotizacion.descripcion_material4 }} </td>
@@ -200,7 +200,7 @@
 </tr>
 {% endif %}
 
-{% if cotizacion.material5 != "" and cotizacion.material5 != "None" %}
+{% if cotizacion.material5 != "" and cotizacion.material5 != "None" and cotizacion.material5 != None %}
 <tr>
   <td> {{ cotizacion.material5 }} </td>
   <td> {{ cotizacion.descripcion_material5 }} </td>

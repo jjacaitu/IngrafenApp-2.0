@@ -19,6 +19,7 @@
 
   <th>ESTADO</th>
   <th># OT</th>
+  <th>SOLICITUD</th>
   </thead>
 {% for ordenes in ordenes_por_fecha %}
 <form enctype="multipart/form-data" method="POST">
@@ -28,7 +29,7 @@
 <tr>
 
 
-{% if ordenes.vendedor_ot == user.username or user.categoria == "COT" or user.categoria == "ADM" %}
+{% if ordenes.vendedor_ot == user.username or user.categoria == "PRO" or user.categoria == "ADM" %}
   <td>{{ ordenes.vendedor_ot }} </td>
   <td>{{ ordenes.nombre_cliente_ot }} </td>
   <td>{{ ordenes.trabajo_ot }} </td>
@@ -39,10 +40,10 @@
   <td><strong>{{ ordenes.fecha_completada_ot }}</strong></td>
 
   <td>{{ ordenes.estado_ot }}</td>
+<td><strong>{{ ordenes.num_ot_relacionada }}</strong></td>
 
 
-
-  <td>  <input type="submit" name="numero" class="btn btn-primary" value={{ ordenes.num_ot_relacionada }}></td>
+  <td>  <input type="submit" name="numero" class="btn btn-primary" value={{ ordenes.num_solicitud_ot }}></td>
   </tr>
   </form>
   {% endif %}
@@ -255,8 +256,8 @@
   {% endfor %}
   <div class="container">
 
-{% if user.categoria == "COT" or user.categoria == "ADM" %}
-  <label for="orden_papyrus">Cantidad entregada: </label>
+{% if user.categoria == "PRO" or user.categoria == "ADM" %}
+  <label for="orden_papyrus">Fecha de entrega: </label>
   <input type="date" name="fecha" min="{{ hoy }}" required>
 
   <input type="submit" name="boton_fecha" value="ESTABLECER FECHA DE ENTREGA" class="btn btn-primary">

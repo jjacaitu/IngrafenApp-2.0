@@ -491,6 +491,9 @@ function check(){
     document.getElementById('cantidad_cintas').disabled = false;
     document.getElementById('cm_cintas').disabled = false;
     document.getElementById('tipo_cinta').disabled = false;
+    document.getElementById('cantidad_cintas').required = true;
+    document.getElementById('cm_cintas').required = true;
+    document.getElementById('tipo_cinta').required = true;
   }else{
     document.getElementById('cantidad_cintas').disabled = true;
     document.getElementById('cm_cintas').disabled = true;
@@ -498,6 +501,9 @@ function check(){
     document.getElementById('cantidad_cintas').value = "";
     document.getElementById('cm_cintas').value = "";
     document.getElementById('tipo_cinta').value = "";
+    document.getElementById('cantidad_cintas').required = false;
+    document.getElementById('cm_cintas').required = false;
+    document.getElementById('tipo_cinta').required = false;
   }
 }
 

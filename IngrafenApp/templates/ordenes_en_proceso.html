@@ -20,6 +20,7 @@
   <th>FECHA ULTIMA ENTREGA</th>
   <th>ESTADO</th>
   <th># OT</th>
+  <th>SOLICITUD</th>
   </thead>
 {% for ordenes in ordenes_proceso %}
 <form enctype="multipart/form-data" method="POST">
@@ -41,10 +42,10 @@
   <td><strong> {% if ordenes.fecha_entrega_ot != None %} {{ ordenes.fecha_entrega_ot }} {% else %} Sin fecha {% endif %}</strong></td>
   <td>{% if ordenes.fecha_entregada != None %}{{ ordenes.fecha_entregada }} {% else %} {% endif %}</td>
   <td>{{ ordenes.estado_ot }}</td>
+<td><strong>{{ ordenes.num_ot_relacionada }}</strong></td>
 
 
-
-  <td>  <input type="submit" name="numero" class="btn btn-primary" value={{ ordenes.num_ot_relacionada }}></td>
+  <td>  <input type="submit" name="numero" class="btn btn-primary" value={{ ordenes.num_solicitud_ot }}></td>
   </tr>
   </form>
   {% endif %}
@@ -285,7 +286,7 @@
 
 
 
-{% if user.categoria == "ADM" or user.categoria == "COT" %}
+{% if user.categoria == "ADM" or user.categoria == "PRO" %}
 <form enctype="multipart/form-data" method="POST">
   {% csrf_token %}
   {% for orden in orden_existentes %}
