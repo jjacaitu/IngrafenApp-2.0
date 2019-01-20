@@ -722,11 +722,7 @@ def ordenes_en_proceso(request):
         numero_a_ver = request.POST.get("numero")
 
         orden_existentes = OrdenesSolicitadas.objects.all().filter(num_solicitud_ot=numero_a_ver)
-<<<<<<< HEAD
         return render(request, "ordenes_en_proceso.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
-=======
-        return render(request, "ordenes_en_proceso.html",{"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
->>>>>>> 6c1f3a23a45e31f2ab0736386bf2bd1cc3ab986a
 
 
 
@@ -1757,13 +1753,10 @@ def error01(request):
     ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
     ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
     request.session['tipo_trabajo'] = ""
-<<<<<<< HEAD
     ordenes_existentes_gig = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
     ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
     ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
 
-=======
->>>>>>> 6c1f3a23a45e31f2ab0736386bf2bd1cc3ab986a
 
     return render(request, "error01.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes,"cotizaciones_existentes":cotizaciones_existentes})
 
