@@ -45,6 +45,14 @@ urlpatterns = [
     path("clientes_ot/",views.creacion_cliente_ot,name="creacion_cliente_ot"),
     path("bloqueo_clientes/",views.bloqueo_clientes,name="bloqueo_clientes"),
     path("confirmacion_material/",views.confirmacion_material,name="confirmacion_material"),
+    path("cambio_contraseña/",views.change_password,name="cambio_contraseña"),
+    path("eliminar_solicitud/",views.eliminar_solicitud,name="eliminar_solicitud"),
+    path("solicitud_gigantografia",views.solicitud_gigantografia,name="solicitud_gigantografia"),
+    path("crear_material_gig",views.creacion_material_gig,name="crear_material_gig"),
+    path("crear_trabajo_gig",views.creacion_trabajo_gig,name="crear_trabajo_gig"),
+    path("ordenes_por_aperturar_gig",views.ordenes_por_aperturar_gig,name="ordenes_por_aperturar_gig"),
+    path("ordenes_en_proceso_gig/",views.ordenes_en_proceso_gig,name="ordenes_en_proceso_gig"),
+    path("ordenes_sin_fecha_gig/",views.ordenes_sin_fecha_gig,name="ordenes_sin_fecha_gig"),
 
 
 ]

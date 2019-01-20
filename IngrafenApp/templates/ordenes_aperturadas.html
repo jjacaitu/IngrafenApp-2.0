@@ -6,11 +6,11 @@
   <input type="text" id="parametro" name="parametro" value="" style="display:none" placeholder="Buscar por:">
   <select id="cl" name="cl" style="display:none">
     {% for clientes in clientes_creados %}
-    {% if user.categoria == "ADM"%}
-    <option value="{{ clientes.nombre }}">{{ clientes.nombre }}</option>
+    {% if user.categoria != "VEN" %}
+    <option value="{{ clientes.nombre_razon_social }}">{{ clientes.nombre_razon_social }}</option>
     {% else %}
-    {% if clientes.vendedor_asociado == user %}
-    <option value="{{ clientes.nombre }}">{{ clientes.nombre }}</option>
+    {% if clientes.vendedor_asociado == user.username %}
+    <option value="{{ clientes.nombre_razon_social }}">{{ clientes.nombre_razon_social }}</option>
     {% endif %}
     {% endif %}
 {% endfor %}
@@ -60,7 +60,7 @@
 <thead class="thead-dark">
 
 
-
+<th># SOLICITUD</th>
   <th>VENDEDOR</th>
   <th>CLIENTE</th>
   <th>PROMOCION</th>
@@ -77,13 +77,13 @@
   <th>BOTON</th>
 </thead>
 {% for orden in ordenes_completadas %}
-{% if orden.vendedor_ot == user.username or user.categoria == "COT" or user.categoria == "ADM" %}
+{% if orden.vendedor_ot == user.username or user.categoria == "COT" or user.categoria == "ADM" or user.categoria == "PRO" %}
 <tr>
 
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
 
-
+    <td>{{ orden.num_solicitud_ot }} </td>
   <td>{{ orden.vendedor_ot }} </td>
   <td>{{ orden.nombre_cliente_ot }} </td>
   <td>{{ orden.trabajo_ot }}</td>

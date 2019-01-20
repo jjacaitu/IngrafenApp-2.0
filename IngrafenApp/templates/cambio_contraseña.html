@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if user.categoria == "ADM" %}
+{% if cambiado == False %}
+<h2>CAMBIO DE CONTRASEÑA</h2>
+<div class="jumbotron">
+
+  <form method="post">
+  {% csrf_token %}
+  <label for="">Usuario: </label>
+  <select class="" name="usuario">
+    <option value=""></option>
+    {% for usuarios in usuarios_existentes %}
+    <option value="{{ usuarios }}">{{ usuarios }}</option>
+    {% endfor %}
+  </select>
+  <label for="">Contraseña nueva: </label>
+  <input type="text" name="contraseña" value="">
+  </div>
+  <p style="text-align:center"><button type="submit" class="btn btn-danger btn-lg" >CAMBIAR CONTRASEÑA</button></p>
+</form>
+
+{% else %}
+<h2>CONTRASEÑA MODIFICADA CON EXITO!</h2>
+
+{% endif %}
+{% endif %}
+{% endblock %}

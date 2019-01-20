@@ -63,13 +63,13 @@
 
   {% for orden in orden_existentes %}
   <h2>Solicitud de orden #{{ orden.num_solicitud_ot }}</h2>
-  {% if user.categoria == "ADM" or user.categoria == "COT" %}
+
   <h3 style="background-color:#ce5252;text-align:left;color:white">Cotizador asignado: {% if orden.procesado_por_ot != " " %} {{ orden.procesado_por_ot }} -- {% else %} Sin asignar -- {% endif %}     Cotizacion: {% if orden.numero_cotizacion_ot != "" %}
-  #{{ orden.numero_cotizacion_ot }}
+  #{{ orden.numero_cotizacion_ot }}      Vendedor: {{ orden.vendedor_ot }}
   {% else %}
-  Pendiente
+  Pendiente      Vendedor: {{ orden.vendedor_ot }}
   {% endif %}</h3>
-  {% endif %}
+
   <table class="table table-bordered solido">
 
   <tr>
@@ -302,9 +302,11 @@
   {% csrf_token %}
   {% for orden in orden_existentes %}
 <input type="hidden" name="numero1" value= {{ orden.num_solicitud_ot }}>
-{% endfor %}
+
   <p style="text-align:center">
-  <input type="submit" name="asignar" value="ASIGNAR" class="btn btn-danger btn-lg"></p>
+  <input type="submit" name="asignar" value="ASIGNAR" class="btn btn-danger btn-lg">
+  <input type="submit" name="borrar" value={% if orden.permiso_borrar == True %}"DESHABILITAR ELIMINACION"{% else %}"HABILITAR ELIMINACION"{% endif %} class="btn btn-warning btn-lg"></p>
+{% endfor %}
 </form>
 {% endif %}
 </div>

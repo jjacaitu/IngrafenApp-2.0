@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from cotizacion.models import Usuarios,CotizacionesSolicitadas, Materiales, TipoDeTrabajo, Clientes, OrdenesSolicitadas, Clientes_ot
+from cotizacion.models import Usuarios,CotizacionesSolicitadas, Materiales, TipoDeTrabajo, Clientes, OrdenesSolicitadas, Clientes_ot, Materiales_gig, TipoDeTrabajo_gig, OrdenesGigantografia
 from cotizacion import views, models
 
 
@@ -14,9 +14,19 @@ class Materiales(ModelForm):
         model = Materiales
         exclude = ["usuario"]
 
+class Materiales_gig(ModelForm):
+    class Meta:
+        model = Materiales_gig
+        exclude = ["usuario"]
+
 class TipoDeTrabajo(ModelForm):
     class Meta:
         model = TipoDeTrabajo
+        exclude = ["usuario"]
+
+class TipoDeTrabajo_gig(ModelForm):
+    class Meta:
+        model = TipoDeTrabajo_gig
         exclude = ["usuario"]
 
 class Clientes(ModelForm):
@@ -63,7 +73,16 @@ class Solicitud_ot_aprobacion(ModelForm):
     def __init__(self,user, *args, **kwargs):
         super(Solicitud_ot_aprobacion, self).__init__(*args, **kwargs)
 
-#class Bloqueo_cliente(ModelForm):
+
+class Solicitud_ot_gig(ModelForm):
+    class Meta:
+        model = OrdenesGigantografia
+        exclude = ["vendedor_ot","cotizador_ot","numero_cotizacion_ot","fecha_entrega_ot"]
+        widgets = {"tipo_impresion":forms.RadioSelect()}
+    def __init__(self,user, *args, **kwargs):
+        super(Solicitud_ot_gig, self).__init__(*args, **kwargs)
+        self.fields['nombre_cliente_ot'].queryset = models.Clientes_ot.objects.filter(vendedor_asociado=user,desactivado=False).order_by("nombre_razon_social")
+#lass Bloqueo_cliente(ModelForm):
 #    class Meta:
 #        model = Clientes_ot
 #        exclude = ["usuario","vendedor_asociado","codigo"]

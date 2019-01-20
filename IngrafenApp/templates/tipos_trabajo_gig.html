@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  {% if creado %}
+  <h2>TIPO DE TRABAJO INGRESADO CON EXITO!</h2>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+<p style="text-align:center;margin:40px"><input type="submit" name="" value="CREAR NUEVO TIPO DE TRABAJO" class="btn btn-danger btn-lg"></p>
+    </form>
+  {% elif user.categoria == "ADM" %}
+  <h2>INGRESO DE TIPO DE TRABAJO:</h2>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    {{ trabajo.as_p }}
+    <input type="submit" name="crear" value="CREAR" class="btn btn-primary">
+  </form>
+{% endif %}
+
+</div>
+{% endblock %}

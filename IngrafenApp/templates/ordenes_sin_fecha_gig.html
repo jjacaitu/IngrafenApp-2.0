@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block content %}
+{% if buscar == False %}
+<div class="container">
+{% if ordenes_por_fecha.exists %}
+<h2>ORDENES SOLICITADAS:</h2>
+<table class="table table-striped table-bordered">
+<thead class="thead-dark">
+
+
+  <th>VENDEDOR</th>
+  <th>CLIENTE</th>
+  <th>PROMOCION</th>
+  <th>MATERIAL</th>
+  <th>TIPO DE TRABAJO</th>
+  <th>CANTIDAD</th>
+  <th>MEDIDA</th>
+  <th>FECHA APERTURADA</th>
+
+  <th>ESTADO</th>
+  <th># OT</th>
+  <th>SOLICITUD</th>
+  </thead>
+{% for ordenes in ordenes_por_fecha_gig %}
+<form enctype="multipart/form-data" method="POST">
+{% csrf_token %}
+
+
+<tr>
+
+
+{% if ordenes.vendedor_ot == user.username or user.categoria == "PRO" or user.categoria == "ADM" %}
+  <td>{{ ordenes.vendedor_ot }} </td>
+  <td>{{ ordenes.nombre_cliente_ot }} </td>
+  <td>{{ ordenes.trabajo_ot }} </td>
+  <td>{{ ordenes.material_ot }} </td>
+  <td>{{ ordenes.tipo_trabajo_ot }} </td>
+  <td>{{ ordenes.cantidad_ot }} </td>
+  <td>{{ ordenes.medida_alto_ot }} X {{ ordenes.medida_ancho_ot }} </td>
+  <td><strong>{{ ordenes.fecha_completada_ot }}</strong></td>
+
+  <td>{{ ordenes.estado_ot }}</td>
+<td><strong>{{ ordenes.num_ot_relacionada }}</strong></td>
+
+
+  <td>  <input type="submit" name="numero" class="btn btn-primary" value={{ ordenes.num_solicitud_ot }}></td>
+  </tr>
+  </form>
+  {% endif %}
+  {% endfor %}
+  </div>
+  {% else %}
+  <h2>NO HAY ORDENES</h2>
+  {% endif %}
+  {% else %}
+  <div class="container">
+
+
+  {% for orden in orden_existentes %}
+  <h2>Orden de Trabajo #{{ orden.num_ot_relacionada }}</h2>
+
+
+
+  <table class="table table-bordered solido">
+
+  <tr>
+    <td colspan="2"><label for="">Cliente:</label></td>
+<td colspan="2">{{ orden.nombre_cliente_ot }}</td>
+<td colspan="2"> <label for="">Nombre de promocion: </label></td>
+<td colspan="2">{{ orden.trabajo_ot }}</td>
+
+  </tr>
+<tr>
+  <td colspan="2"><label for="">Tipo de trabajo:</label></td>
+  <td colspan="2">{{ orden.tipo_trabajo_ot }}
+
+</td>
+
+  <td colspan="2"><label for="">Cantidad:</label></td>
+  <td colspan="2">{{ orden.cantidad_ot }}</td>
+
+
+  </tr>
+  <tr>
+    <td colspan="2"> <label for="">Direccion de entrega: </label> </td>
+
+    <td colspan="5"> {{ orden.direccion_entrega }} </td>
+
+  </tr>
+
+  <tr>
+    <td colspan="2"> <label for="">Persona que recibe: </label> </td>
+
+    <td colspan="2"> {{ orden.persona_recibe }} </td>
+
+
+    <td colspan="2"> <label for="">Forma de empaque: </label> </td>
+
+    <td colspan="2"> {{ orden.forma_empaque }} </td>
+
+
+  </tr>
+  </table>
+  <table class="table table-bordered solido">
+
+    <thead class="thead solido">
+      <th colspan="8" style="color:darkblue;text-align:center">MATERIALES</th>
+    </thead>
+  <tr>
+    <td><label for="">Material</label></td>
+    <td> <label for="">Descripcion</label> </td>
+    <td> <label for="">Medida</label> </td>
+
+    <td> <label for="">Troquelado</label> </td>
+  </tr>
+  <tr>
+    <td> {{ orden.material_ot }} </td>
+    <td> {{ orden.descripcion_material_ot }} </td>
+    <td>{{ orden.medida_alto_ot }} X {{ orden.medida_ancho_ot }} </td>
+
+<td>
+    {{ orden.troquelado_ot }}
+     </td>
+
+  </tr>
+
+{% if orden.material2_ot != "" and orden.material2_ot != None %}
+<tr>
+  <td> {{ orden.material2_ot }} </td>
+  <td> {{ orden.descripcion_material2_ot }} </td>
+  <td>{{ orden.medida_alto_2_ot }} X {{ orden.medida_ancho_2_ot }} </td>
+
+<td>
+  {{ orden.troquelado2_ot }}
+   </td>
+
+</tr>
+{% endif %}
+
+{% if orden.material3_ot != "" and orden.material3_ot != None  %}
+<tr>
+  <td> {{ orden.material3_ot }} </td>
+  <td> {{ orden.descripcion_material3_ot }} </td>
+  <td>{{ orden.medida_alto_3_ot }} X {{ orden.medida_ancho_3_ot }} </td>
+
+<td>
+  {{ orden.troquelado3_ot }}
+   </td>
+
+</tr>
+{% endif %}
+
+{% if orden.material4_ot != "" and orden.material4_ot != None %}
+<tr>
+  <td> {{ orden.material4_ot }} </td>
+  <td> {{ orden.descripcion_material4_ot }} </td>
+  <td>{{ orden.medida_alto_4_ot }} X {{ orden.medida_ancho_4_ot }} </td>
+
+<td>
+  {{ orden.troquelado4_ot }}
+   </td>
+
+</tr>
+{% endif %}
+
+{% if orden.material5_ot != "" and orden.material5_ot != None %}
+<tr>
+  <td> {{ orden.material5_ot }} </td>
+  <td> {{ orden.descripcion_material5_ot }} </td>
+  <td>{{ orden.medida_alto_5_ot }} X {{ orden.medida_ancho_5_ot }} </td>
+
+<td>
+  {{ orden.troquelado5_ot }}
+   </td>
+
+</tr>
+{% endif %}
+</table>
+
+<table class="table table-bordered solido">
+
+
+  <tr>
+
+<td colspan="2"> <label for="">Detalles adicionales:</label> <p>{{ orden.detalles_ot|linebreaks}}</p> </td>
+
+
+</tr>
+</table>
+
+  {% endfor %}
+  </div>
+  </table>
+  <form enctype="multipart/form-data" method="POST">
+
+    {% csrf_token %}
+    {% for orden in orden_existentes %}
+  <input type="hidden" name="numero1" value={{ orden.num_solicitud_ot }}>
+  {% endfor %}
+  <div class="container">
+
+{% if user.categoria == "PRO" or user.categoria == "ADM" %}
+  <label for="orden_papyrus">Fecha de entrega: </label>
+  <input type="date" name="fecha" min="{{ hoy }}" required>
+
+  <input type="submit" name="boton_fecha" value="ESTABLECER FECHA DE ENTREGA" class="btn btn-primary">
+
+  {% endif %}
+  </form>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <input type="submit" name="boton_regresar" value="REGRESAR" class="btn btn-primary">
+
+  </form>
+
+
+
+
+
+
+
+</div>
+
+</table>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% if cambiado == False %}
+<h2>ELIMINAR SOLICITUD</h2>
+<div class="jumbotron">
+<table>
+
+<tr>
+
+
+  <form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  <td>
+  <label for="">SOLICITUD DE ORDEN: </label></td>
+  <td>
+  <select class="" name="orden">
+    <option value=""></option>
+    {% for orden in ordenes_eliminar %}
+    {% if orden.vendedor_ot == user.username or user.categoria == "ADM" %}
+    <option value="{{ orden.num_solicitud_ot }}">{{ orden }}</option>
+    {% endif %}
+    {% endfor %}
+  </select>
+  </td><td>
+  <input type="submit" name="eliminar_ot" value="ELIMINAR ORDEN" class="btn btn-danger btn-sm" ></input>
+</td>
+  </form>
+
+  </tr>
+  <tr>
+
+
+  <form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  <td>
+  <label for="">SOLICITUD DE COTIZACION: </label></td>
+  <td>
+  <select class="" name="cotizacion">
+    <option value=""></option>
+    {% for cotizacion in cotizaciones_eliminar %}
+    {% if cotizacion.vendedor == user.username or user.categoria == "ADM" %}
+    <option value="{{ cotizacion.num_solicitud }}">{{ cotizacion }}</option>
+    {% endif %}
+    {% endfor %}
+  </select>
+</td>
+<td>
+  <input type="submit" name="eliminar_cot" value="ELIMINAR COTIZACION" class="btn btn-danger btn-sm" ></input>
+
+</td></form>
+  </tr>
+  <tr>
+
+
+<form enctype="multipart/form-data" method="POST">
+{% csrf_token %}
+<td>
+<label for="">SOLICITUD DE OT GIGANTOGRAFIA: </label></td>
+<td>
+<select class="" name="orden_gig">
+  <option value=""></option>
+  {% for cotizacion in gig_eliminar %}
+  {% if cotizacion.vendedor == user.username or user.categoria == "ADM" %}
+  <option value="{{ cotizacion.num_solicitud_ot }}">{{ cotizacion }}</option>
+  {% endif %}
+  {% endfor %}
+</select>
+</td><td>
+<input type="submit" name="eliminar_gig" value="ELIMINAR OT GIGANTOGRAFIA" class="btn btn-danger btn-sm" ></input>
+</td>
+</form>
+  </tr>
+</table>
+</div>
+{% else %}
+<h2>SOLICITUD ELIMINADA CON EXITO!</h2>
+
+
+{% endif %}
+{% endblock %}
