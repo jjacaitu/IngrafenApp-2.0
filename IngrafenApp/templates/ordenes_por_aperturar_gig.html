@@ -2,7 +2,7 @@
 {% block content %}
 {% if buscar == False %}
 <div class="container">
-{% if ordenes_proceso.exists %}
+{% if ordenes_existentes_gig.exists %}
 <h2>ORDENES SOLICITADAS:</h2>
 <table class="table table-striped table-bordered">
 <thead class="thead-dark">
@@ -15,19 +15,18 @@
   <th>TIPO DE TRABAJO</th>
   <th>CANTIDAD</th>
   <th>MEDIDA</th>
-  <th>FECHA APERTURADA</th>
-  <th>FECHA ENTREGA</th>
-  <th>FECHA ULTIMA ENTREGA</th>
-  <th>ESTADO</th>
-  <th># OT</th>
-  <th>SOLICITUD</th>
+  <th>FECHA SOLICITADA</th>
+  {% if user.categoria == "COT" or user.categoria == "ADM" %}
+  <th>COTIZADOR ASIGNADO</th>
+  {% endif %}
+  <th># SOLICITUD</th>
   </thead>
-{% for ordenes in ordenes_proceso %}
+{% for ordenes in ordenes_existentes_gig %}
 <form enctype="multipart/form-data" method="POST">
 {% csrf_token %}
 
 
-<tr {% if hoy > ordenes.fecha_entrega_ot and user.categoria != "VEN" and ordenes.estado_ot != "Orden terminada" and ordenes.estado_ot != "Parcial" %} style="background-color:darkred;color:white" {% endif %}>
+<tr>
 
 
 {% if ordenes.vendedor_ot == user.username or user.categoria == "COT" or user.categoria == "ADM" or user.categoria == "PRO" %}
@@ -38,11 +37,10 @@
   <td>{{ ordenes.tipo_trabajo_ot }} </td>
   <td>{{ ordenes.cantidad_ot }} </td>
   <td>{{ ordenes.medida_alto_ot }} X {{ ordenes.medida_ancho_ot }} </td>
-  <td><strong>{{ ordenes.fecha_completada_ot }}</strong></td>
-  <td><strong> {% if ordenes.fecha_entrega_ot != None %} {{ ordenes.fecha_entrega_ot }} {% else %} Sin fecha {% endif %}</strong></td>
-  <td>{% if ordenes.fecha_entregada != None %}{{ ordenes.fecha_entregada }} {% else %} {% endif %}</td>
-  <td>{{ ordenes.estado_ot }}</td>
-<td><strong>{{ ordenes.num_ot_relacionada }}</strong></td>
+  <td><strong>{{ ordenes.fecha_solicitada_ot }}</strong></td>
+  {% if user.categoria == "COT" or user.categoria == "ADM" %}
+  <td style="color:#114291"><strong>{{ ordenes.procesado_por_ot }}</td>
+  {% endif %}
 
 
   <td>  <input type="submit" name="numero" class="btn btn-primary" value={{ ordenes.num_solicitud_ot }}></td>
@@ -58,10 +56,11 @@
   <div class="container">
 
 
-  {% for orden in orden_existentes %}
-  <h2>Orden de Trabajo #{{ orden.num_ot_relacionada }}</h2>
+  {% for orden in orden_existentes_gig %}
+  <h2>Solicitud de orden #{{ orden.num_solicitud_ot }}</h2>
 
-  <h3 style="background-color:#ce5252;text-align:left;color:white">FECHA DE ENTREGA: {{ orden.fecha_entrega_ot }}</h3>
+  <h3 style="background-color:#ce5252;text-align:left;color:white">Cotizador asignado: {% if orden.procesado_por_ot != " " %} {{ orden.procesado_por_ot }} -- {% else %} Sin asignar -- {% endif %}      Vendedor: {{ orden.vendedor_ot }}
+  </h3>
 
   <table class="table table-bordered solido">
 
@@ -83,6 +82,7 @@
 
 
   </tr>
+
   <tr>
     <td colspan="2"> <label for="">Direccion de entrega: </label> </td>
 
@@ -102,6 +102,7 @@
 
 
   </tr>
+
   </table>
   <table class="table table-bordered solido">
 
@@ -112,50 +113,24 @@
     <td><label for="">Material</label></td>
     <td> <label for="">Descripcion</label> </td>
     <td> <label for="">Medida</label> </td>
-    <td> <label for="">Impresion</label> </td>
-    <td> <label for="">Uv</label>  </td>
-    <td> <label for="">Laminado</label> </td>
     <td> <label for="">Troquelado</label> </td>
   </tr>
   <tr>
     <td> {{ orden.material_ot }} </td>
     <td> {{ orden.descripcion_material_ot }} </td>
     <td>{{ orden.medida_alto_ot }} X {{ orden.medida_ancho_ot }} </td>
-    <td>
-      <label for="">Tiro:</label>
-      {{ orden.impresion_tiro_ot }}
-
-      <label for="">Retiro:</label>
-      {{ orden.impresion_retiro_ot }}
-     </td>
-    <td>
-      {{ orden.uv_ot }}
-      </td>
-      <td>
-      {{ orden.laminado_ot }}</td>
 <td>
     {{ orden.troquelado_ot }}
      </td>
 
   </tr>
 
-{% if orden.material2_ot != "" and orden.material2_ot != None %}
+{% if orden.material2_ot != "" and orden.material2_ot != None  and orden.material2_ot != "None"%}
 <tr>
   <td> {{ orden.material2_ot }} </td>
   <td> {{ orden.descripcion_material2_ot }} </td>
   <td>{{ orden.medida_alto_2_ot }} X {{ orden.medida_ancho_2_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro2_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro2_ot }}
-   </td>
-  <td>
-    {{ orden.uv2_ot }}
-    </td>
-    <td>
-    {{ orden.laminado2_ot }}</td>
 <td>
   {{ orden.troquelado2_ot }}
    </td>
@@ -163,23 +138,12 @@
 </tr>
 {% endif %}
 
-{% if orden.material3_ot != "" and orden.material3_ot != None  %}
+{% if orden.material3_ot != "" and orden.material3_ot != None  and orden.material3_ot != "None" %}
 <tr>
   <td> {{ orden.material3_ot }} </td>
   <td> {{ orden.descripcion_material3_ot }} </td>
   <td>{{ orden.medida_alto_3_ot }} X {{ orden.medida_ancho_3_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro3_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro3_ot }}
-   </td>
-  <td>
-    {{ orden.uv3_ot }}
-    </td>
-    <td>
-    {{ orden.laminado3_ot }}</td>
 <td>
   {{ orden.troquelado3_ot }}
    </td>
@@ -187,23 +151,12 @@
 </tr>
 {% endif %}
 
-{% if orden.material4_ot != "" and orden.material4_ot != None %}
+{% if orden.material4_ot != "" and orden.material4_ot != None  and orden.material4_ot != "None" %}
 <tr>
   <td> {{ orden.material4_ot }} </td>
   <td> {{ orden.descripcion_material4_ot }} </td>
   <td>{{ orden.medida_alto_4_ot }} X {{ orden.medida_ancho_4_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro4_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro4_ot }}
-   </td>
-  <td>
-    {{ orden.uv4_ot }}
-    </td>
-    <td>
-    {{ orden.laminado4_ot }}</td>
 <td>
   {{ orden.troquelado4_ot }}
    </td>
@@ -211,23 +164,12 @@
 </tr>
 {% endif %}
 
-{% if orden.material5_ot != "" and orden.material5_ot != None %}
+{% if orden.material5_ot != "" and orden.material5_ot != None and orden.material5_ot != "None" %}
 <tr>
   <td> {{ orden.material5_ot }} </td>
   <td> {{ orden.descripcion_material5_ot }} </td>
   <td>{{ orden.medida_alto_5_ot }} X {{ orden.medida_ancho_5_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro5_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro5_ot }}
-   </td>
-  <td>
-    {{ orden.uv5_ot }}
-    </td>
-    <td>
-    {{ orden.laminado5_ot }}</td>
 <td>
   {{ orden.troquelado5_ot }}
    </td>
@@ -238,14 +180,11 @@
 
 <table class="table table-bordered solido">
 
-
   <tr>
-    <td> <p><strong>Tipo de impresion: </strong>{{ orden.tipo_impresion }}</p> </td>
 
       <td rowspan="2"><p> <strong> Adjuntos: </strong></p>
         <p style="position:relative">Arte <input type="checkbox" disabled {% if orden.arte %} checked {% endif %}></p>
-       <p style="position:relative"> Dummie <input type="checkbox" disabled {% if orden.dummie %} checked {% endif %}</p><p style="position:relative"> Machote <input type="checkbox" disabled {% if orden.machote %} checked {% endif %}</p>
-     <p style="position:relative"> Prueba de color <input type="checkbox" disabled {% if orden.prueba_de_color %} checked {% endif %}</p><p style="position:relative">Muestra real  <input type="checkbox" disabled {% if orden.muestra_real %} checked {% endif %}</p></td>
+     <p style="position:relative"> Prueba de color <input type="checkbox" disabled {% if orden.prueba_de_color %} checked {% endif %}</p></td>
 
   </tr>
     </tr>
@@ -254,6 +193,9 @@
 
 <td colspan="1"> <label for="">Detalles adicionales:</label> <p>{{ orden.detalles_ot|linebreaks}}</p> </td>
 </tr>
+
+
+
 </table>
 
   {% endfor %}
@@ -262,23 +204,23 @@
   <form enctype="multipart/form-data" method="POST">
 
     {% csrf_token %}
-    {% for orden in orden_existentes %}
+    {% for orden in orden_existentes_gig %}
   <input type="hidden" name="numero1" value={{ orden.num_solicitud_ot }}>
   {% endfor %}
   <div class="container">
 
-{% if user.categoria == "PRO" or user.categoria == "ADM" %}
-  <label for="orden_papyrus">Cantidad entregada: </label>
-  <input type="text" name="cantidad_entregada" required>
+{% if user.categoria == "COT" or user.categoria == "ADM" %}
+  <label for="orden_papyrus"># orden</label>
+  <input type="text" name="orden_papyrus" required>
 
-  <input type="submit" name="boton_parcial" value="ENTREGA PARCIAL" class="btn btn-primary">
+  <input type="submit" name="boton_completar" value="COMPLETAR" class="btn btn-primary">
 
   {% endif %}
   </form>
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
     <input type="submit" name="boton_regresar" value="REGRESAR" class="btn btn-primary">
-
+    <button type="button" class="btn btn-primary" name="button" onclick="window.print();return false;">IMPRIMIR</button>
   </form>
 
 
@@ -286,16 +228,16 @@
 
 
 
-{% if user.categoria == "ADM" or user.categoria == "PRO" %}
+{% if user.categoria == "ADM" or user.categoria == "COT" %}
 <form enctype="multipart/form-data" method="POST">
   {% csrf_token %}
-  {% for orden in orden_existentes %}
+  {% for orden in orden_existentes_gig %}
 <input type="hidden" name="numero1" value= {{ orden.num_solicitud_ot }}>
-{% endfor %}
-  <p style="text-align:center">
-    <input type="submit" name="boton_terminado" value="ORDEN TERMINADA" class="btn btn-primary btn-lg">
-  <input type="submit" name="boton_cerrar" value="CERRAR OT" class="btn btn-danger btn-lg"></p>
 
+  <p style="text-align:center">
+  <input type="submit" name="asignar" value="ASIGNAR" class="btn btn-danger btn-lg">
+  <input type="submit" name="borrar" value={% if orden.permiso_borrar == True %}"DESHABILITAR ELIMINACION"{% else %}"HABILITAR ELIMINACION"{% endif %} class="btn btn-warning btn-lg"></p>
+{% endfor %}
 </form>
 {% endif %}
 </div>

@@ -69,7 +69,7 @@
   <th>CANTIDAD</th>
   <th>MEDIDA</th>
   {% if user.categoria == "ADM" %}
-<th>FECHA SOLICITUD</th>
+<th>FECHA SOLICITADA</th>
 {% endif %}
   <th>FECHA APERTURADA</th>
   <th>FECHA ULTIMA ENTREGA</th>
@@ -167,8 +167,6 @@
   <tr>
     <td colspan="2"> <label for="">OT #</label></td>
     <td colspan="2">{{ orden.num_ot_relacionada }}</td>
-    <td colspan="2"> <label for="">Cotizacion #</label></td>
-    <td colspan="2">{% if orden.numero_cotizacion_ot == "" %}Cotizacion pendiente {% else %}{{ orden.numero_cotizacion_ot }}{% endif %}</td>
 
   </tr>
   <tr>
@@ -221,27 +219,13 @@
     <td><label for="">Material</label></td>
     <td> <label for="">Descripcion</label> </td>
     <td> <label for="">Medida</label> </td>
-    <td> <label for="">Impresion</label> </td>
-    <td> <label for="">Uv</label>  </td>
-    <td> <label for="">Laminado</label> </td>
     <td> <label for="">Troquelado</label> </td>
   </tr>
   <tr>
     <td> {{ orden.material_ot }} </td>
     <td> {{ orden.descripcion_material_ot }} </td>
     <td>{{ orden.medida_alto_ot }} X {{ orden.medida_ancho_ot }} </td>
-    <td>
-      <label for="">Tiro:</label>
-      {{ orden.impresion_tiro_ot }}
 
-      <label for="">Retiro:</label>
-      {{ orden.impresion_retiro_ot }}
-     </td>
-    <td>
-      {{ orden.uv_ot }}
-      </td>
-      <td>
-      {{ orden.laminado_ot }}</td>
 <td>
     {{ orden.troquelado_ot }}
      </td>
@@ -253,18 +237,7 @@
   <td> {{ orden.material2_ot }} </td>
   <td> {{ orden.descripcion_material2_ot }} </td>
   <td>{{ orden.medida_alto_2_ot }} X {{ orden.medida_ancho_2_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro2_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro2_ot }}
-   </td>
-  <td>
-    {{ orden.uv2_ot }}
-    </td>
-    <td>
-    {{ orden.laminado2_ot }}</td>
 <td>
   {{ orden.troquelado2_ot }}
    </td>
@@ -277,18 +250,7 @@
   <td> {{ orden.material3_ot }} </td>
   <td> {{ orden.descripcion_material3_ot }} </td>
   <td>{{ orden.medida_alto_3_ot }} X {{ orden.medida_ancho_3_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro3_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro3_ot }}
-   </td>
-  <td>
-    {{ orden.uv3_ot }}
-    </td>
-    <td>
-    {{ orden.laminado3_ot }}</td>
 <td>
   {{ orden.troquelado3_ot }}
    </td>
@@ -301,16 +263,7 @@
   <td> {{ orden.material4_ot }} </td>
   <td> {{ orden.descripcion_material4_ot }} </td>
   <td>{{ orden.medida_alto_4_ot }} X {{ orden.medida_ancho_4_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro4_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro4_ot }}
-   </td>
-  <td>
-    {{ orden.uv4_ot }}
-    </td>
     <td>
     {{ orden.laminado4_ot }}</td>
 <td>
@@ -325,18 +278,7 @@
   <td> {{ orden.material5_ot }} </td>
   <td> {{ orden.descripcion_material5_ot }} </td>
   <td>{{ orden.medida_alto_5_ot }} X {{ orden.medida_ancho_5_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro5_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro5_ot }}
-   </td>
-  <td>
-    {{ orden.uv5_ot }}
-    </td>
-    <td>
-    {{ orden.laminado5_ot }}</td>
 <td>
   {{ orden.troquelado5_ot }}
    </td>
@@ -349,12 +291,12 @@
 
 
   <tr>
-    <td> <p><strong>Tipo de impresion: </strong>{{ orden.tipo_impresion }}</p> </td>
+
 
       <td rowspan="2"><p> <strong> Adjuntos: </strong></p>
         <p style="position:relative">Arte <input type="checkbox" disabled {% if orden.arte %} checked {% endif %}></p>
-       <p style="position:relative"> Dummie <input type="checkbox" disabled {% if orden.dummie %} checked {% endif %}</p><p style="position:relative"> Machote <input type="checkbox" disabled {% if orden.machote %} checked {% endif %}</p>
-     <p style="position:relative"> Prueba de color <input type="checkbox" disabled {% if orden.prueba_de_color %} checked {% endif %}</p><p style="position:relative">Muestra real  <input type="checkbox" disabled {% if orden.muestra_real %} checked {% endif %}</p></td>
+
+     <p style="position:relative"> Prueba de color <input type="checkbox" disabled {% if orden.prueba_de_color %} checked {% endif %}</p>
 
   </tr>
     </tr>
@@ -374,18 +316,14 @@
 
 <input type="hidden" name="cot_reutilizar" value="{{ orden.num_solicitud_ot }}">
 {% endfor %}
-
-  </form>
-  <button class="btn btn-primary" onclick="goBack()">REGRESAR</button>
+</form>
+<button class="btn btn-primary" onclick="goBack()">REGRESAR</button>
 
 <script>
 function goBack() {
-  window.history.back();
+window.history.back();
 }
 </script>
-
-
-
 </div>
 {% endif %}
 

@@ -22,7 +22,7 @@
   <th># OT</th>
   <th>SOLICITUD</th>
   </thead>
-{% for ordenes in ordenes_proceso %}
+{% for ordenes in ordenes_proceso_gig %}
 <form enctype="multipart/form-data" method="POST">
 {% csrf_token %}
 
@@ -112,27 +112,15 @@
     <td><label for="">Material</label></td>
     <td> <label for="">Descripcion</label> </td>
     <td> <label for="">Medida</label> </td>
-    <td> <label for="">Impresion</label> </td>
-    <td> <label for="">Uv</label>  </td>
-    <td> <label for="">Laminado</label> </td>
+
     <td> <label for="">Troquelado</label> </td>
   </tr>
   <tr>
     <td> {{ orden.material_ot }} </td>
     <td> {{ orden.descripcion_material_ot }} </td>
     <td>{{ orden.medida_alto_ot }} X {{ orden.medida_ancho_ot }} </td>
-    <td>
-      <label for="">Tiro:</label>
-      {{ orden.impresion_tiro_ot }}
 
-      <label for="">Retiro:</label>
-      {{ orden.impresion_retiro_ot }}
-     </td>
-    <td>
-      {{ orden.uv_ot }}
-      </td>
-      <td>
-      {{ orden.laminado_ot }}</td>
+
 <td>
     {{ orden.troquelado_ot }}
      </td>
@@ -144,18 +132,7 @@
   <td> {{ orden.material2_ot }} </td>
   <td> {{ orden.descripcion_material2_ot }} </td>
   <td>{{ orden.medida_alto_2_ot }} X {{ orden.medida_ancho_2_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro2_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro2_ot }}
-   </td>
-  <td>
-    {{ orden.uv2_ot }}
-    </td>
-    <td>
-    {{ orden.laminado2_ot }}</td>
 <td>
   {{ orden.troquelado2_ot }}
    </td>
@@ -168,18 +145,7 @@
   <td> {{ orden.material3_ot }} </td>
   <td> {{ orden.descripcion_material3_ot }} </td>
   <td>{{ orden.medida_alto_3_ot }} X {{ orden.medida_ancho_3_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro3_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro3_ot }}
-   </td>
-  <td>
-    {{ orden.uv3_ot }}
-    </td>
-    <td>
-    {{ orden.laminado3_ot }}</td>
 <td>
   {{ orden.troquelado3_ot }}
    </td>
@@ -192,18 +158,7 @@
   <td> {{ orden.material4_ot }} </td>
   <td> {{ orden.descripcion_material4_ot }} </td>
   <td>{{ orden.medida_alto_4_ot }} X {{ orden.medida_ancho_4_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro4_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro4_ot }}
-   </td>
-  <td>
-    {{ orden.uv4_ot }}
-    </td>
-    <td>
-    {{ orden.laminado4_ot }}</td>
 <td>
   {{ orden.troquelado4_ot }}
    </td>
@@ -216,18 +171,7 @@
   <td> {{ orden.material5_ot }} </td>
   <td> {{ orden.descripcion_material5_ot }} </td>
   <td>{{ orden.medida_alto_5_ot }} X {{ orden.medida_ancho_5_ot }} </td>
-  <td>
-    <label for="">Tiro:</label>
-    {{ orden.impresion_tiro5_ot }}
 
-    <label for="">Retiro:</label>
-    {{ orden.impresion_retiro5_ot }}
-   </td>
-  <td>
-    {{ orden.uv5_ot }}
-    </td>
-    <td>
-    {{ orden.laminado5_ot }}</td>
 <td>
   {{ orden.troquelado5_ot }}
    </td>
@@ -244,8 +188,8 @@
 
       <td rowspan="2"><p> <strong> Adjuntos: </strong></p>
         <p style="position:relative">Arte <input type="checkbox" disabled {% if orden.arte %} checked {% endif %}></p>
-       <p style="position:relative"> Dummie <input type="checkbox" disabled {% if orden.dummie %} checked {% endif %}</p><p style="position:relative"> Machote <input type="checkbox" disabled {% if orden.machote %} checked {% endif %}</p>
-     <p style="position:relative"> Prueba de color <input type="checkbox" disabled {% if orden.prueba_de_color %} checked {% endif %}</p><p style="position:relative">Muestra real  <input type="checkbox" disabled {% if orden.muestra_real %} checked {% endif %}</p></td>
+
+     <p style="position:relative"> Prueba de color <input type="checkbox" disabled {% if orden.prueba_de_color %} checked {% endif %}</p></td>
 
   </tr>
     </tr>

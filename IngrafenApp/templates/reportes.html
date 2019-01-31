@@ -34,7 +34,8 @@
   <th colspan="2"></th>
   <th colspan="3" style="text-align:center">Cotizaciones</th>
   <th colspan="3" style="text-align:center">Ordenes</th>
-  <th colspan="2" style="text-align:center">Ratio % cotizaciones/ordenes</th>
+  <th colspan="3" style="text-align:center">Ordenes Gigantografia</th>
+  <th colspan="2" style="text-align:center">Ratio Offset % cotizaciones/ordenes</th>
 
 
 </thead>
@@ -45,6 +46,9 @@
   <th>Mes</th>
   <th>Total año</th>
 
+  <th>Hoy</th>
+  <th>Mes</th>
+  <th>Total año</th>
   <th>Hoy</th>
   <th>Mes</th>
   <th>Total año</th>
@@ -104,6 +108,12 @@
 
 <h2>Ordenes por vendedor</h2>
 <canvas id="myChart4" height="100"></canvas></div>
+
+<h2>Ordenes Gigantografia por cotizador</h2>
+<canvas id="myChart5" height="100"></canvas></div>
+
+<h2>Ordenes Gigantografia por vendedor</h2>
+<canvas id="myChart6" height="100"></canvas></div>
 
 {% endif %}
 <script>
@@ -279,6 +289,78 @@ var myChart4 = new Chart(ctx4, {
     }
 }});
 
+var datos_ventas_ot_gig = {{ datas_vendedores_ot_gig }};
+var datos_ot_gig = {{ datas_ot_gig }};
+
+var ctx6 = document.getElementById("myChart6").getContext('2d');
+var myChart6 = new Chart(ctx6, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles_ventas_ot[0],
+            data: datos_ventas_ot_gig[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
+
+var ctx5 = document.getElementById("myChart5").getContext('2d');
+var myChart5 = new Chart(ctx5, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles_ot[0],
+            data: datos_ot_gig[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
 for (i = 1; i < titles.length; i++) {
   addData(myChart, titles[i], colors.pop(getRandomArbitrary(0,12)), datos[i]);
 
@@ -296,6 +378,16 @@ for (i = 1; i < titles_ventas_ot.length; i++) {
 
 for (i = 1; i < titles_ot.length; i++) {
   addData(myChart3, titles_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_ot[i]);
+
+}
+
+for (i = 1; i < titles_ot.length; i++) {
+  addData(myChart5, titles_ventas_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_vendedores_ot_gig[i]);
+
+}
+
+for (i = 1; i < titles_ot.length; i++) {
+  addData(myChart6, titles_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_ot_gig[i]);
 
 }
 

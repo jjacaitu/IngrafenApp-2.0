@@ -64,6 +64,7 @@
 
   <th>CLIENTE</th>
   <th>PROMOCION</th>
+  <th>DESCRIPCION</th>
   <th>MATERIAL</th>
   <th>TIPO DE TRABAJO</th>
   <th>CANTIDAD</th>
@@ -87,8 +88,10 @@
 
   <td>{{ cotizacion.nombre_cliente }} </td>
   <td>{{ cotizacion.trabajo}}</td>
+  <td>{{ cotizacion.descripcion_material }}</td>
   <td>{{ cotizacion.material }} </td>
   <td>{{ cotizacion.tipo_trabajo }} </td>
+
   <td>{{ cotizacion.cantidad }} </td>
   <td>{{ cotizacion.medida_ancho }} x {{ cotizacion.medida_alto }} </td>
 
@@ -344,17 +347,25 @@
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
 
-<input type="hidden" name="cot_reutilizar" value="{{ cotizacion.num_solicitud }}">
+<input type="hidden" name="cot_ver" value="{{ cotizacion.num_solicitud }}">
 {% endfor %}
-  <input type="submit" name="regresar" value="REGRESAR" class="btn btn-primary" >
-  {% if user.categoria == "VEN" %}
-  <form action="{% url 'solicitud' %}">
-    {% csrf_token %}
 
+  <input type="submit" name="reutilizar" value="REUTILIZAR" class="btn btn-success" >
+
+
+ {% if user.categoria == "VEN" and cotizacion.solicitud_ot == "" %}
   <input type="submit" name="solicitar" value="Solicitar OT" class="btn btn-danger">
-  </form>
+
 {% endif %}
 </form>
+
+<button class="btn btn-primary" onclick="goBack()">REGRESAR</button>
+
+<script>
+function goBack() {
+window.history.back();
+}
+</script>
 </div>
 {% endif %}
 

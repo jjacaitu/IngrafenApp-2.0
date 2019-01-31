@@ -15,7 +15,7 @@
   <th>TIPO DE TRABAJO</th>
   <th>CANTIDAD</th>
 
-  <th>FECHA SOLICITADA</th>
+  <th>FECHA APERTURADA</th>
   {% if user.categoria == "COT" or user.categoria == "ADM" %}
   <th>COTIZADOR ASIGNADO</th>
   {% endif %}
@@ -38,17 +38,18 @@
   <td>{{ ordenes.material_ot }} </td>
   <td>{{ ordenes.tipo_trabajo_ot }} </td>
   <td>{{ ordenes.cantidad_ot }} </td>
-  
-  <td><strong>{{ ordenes.fecha_solicitada_ot }}</strong></td>
+
+  <td><strong>{{ ordenes.fecha_completada_ot }}</strong></td>
   {% if user.categoria == "COT" or user.categoria == "ADM" %}
   <td style="color:#114291"><strong>{{ ordenes.procesado_por_ot }}</td>
   {% endif %}
   {% if ordenes.numero_cotizacion_ot != "" %}
   <td>{{ ordenes.numero_cotizacion_ot }}</td>
-  <td>{{ ordenes.num_ot_relacionada }}</td>
+
   {% else %}
   <td>Pendiente</td>
   {% endif %}
+  <td>{{ ordenes.num_ot_relacionada }}</td>
 
   <td><input type="hidden" name="orden_a_confirmar" value="{{ ordenes.num_solicitud_ot }}">  <input type="submit" name="confirmado" class="btn btn-danger" value="MATERIAL CONFIRMADO"></td>
   </tr>

@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% block content %}
+{% load staticfiles %}
+
+{% if cambiado == False %}
+<h2>SOLICITUD ORDEN GIGANTOGRAFIA</h2>
+<div class="jumbotron">
+
+
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <div class="container">
+
+
+    <label for=""># Solicitud OT a reutilizar: </label>
+    <input type="text" name="ot_reutilizar" value="">
+    <input type="submit" name="Buscar" value="Buscar" class="btn btn-primary">
+
+  </form>
+  </div>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    {% if aprobada %}
+    <input type="hidden" name="solicitud" value="{{cotizacion.num_solicitud}}">
+    <input type="hidden" name="cotizacion" value="{{cotizacion.numero_cotizacion}}">
+    {% endif %}
+    <table class="table table-bordered solido">
+      <tr>
+        <td colspan="2"><label for="">Cliente:</label></td>
+    <td colspan="2" > {{ orden.nombre_cliente_ot }}</td>
+    <td colspan="2"> <label for="">Nombre de promocion: </label></td>
+    <td colspan="2">{{ orden.trabajo_ot }}</td>
+
+      </tr>
+
+      <tr>
+        <td colspan="2"> <label for="">Direccion de entrega: </label> </td>
+        {% if busqueda %}
+        <td colspan="5"> <input type="text" name="direccion" value="{{ orden_encontrada.direccion_entrega }}" size="100" required> </td>
+        {% else%}
+        <td colspan="5"> <input type="text" name="direccion" value="" size="100" required> </td>
+        {% endif %}
+      </tr>
+
+      <tr>
+        <td colspan="2"> <label for="">Persona que recibe: </label> </td>
+        {% if busqueda %}
+        <td colspan="2"> <input type="text" name="persona" value="{{ orden_encontrada.persona_recibe }}" required> </td>
+        {% else%}
+        <td colspan="2"> <input type="text" name="persona" value="" required> </td>
+        {% endif %}
+        <td colspan="2"> <label for="">Forma de empaque: </label> </td>
+        {% if busqueda %}
+        <td colspan="2"> <input type="text" name="empaque" value="{{ orden_encontrada.forma_empaque }}" required> </td>
+        {% else%}
+        <td colspan="2"> <input type="text" name="empaque" value="" required> </td>
+        {% endif %}
+      </tr>
+
+    <tr>
+      <td colspan="2"><label for="">Tipo de trabajo:</label></td>
+      <td colspan="2"><select class="" name="opciones"  {% if aprobada %} disabled {% endif %}  onchange="verificar_tipo_trabajo(this)" required>
+        {% if busqueda %}
+        <option value="{{ orden_encontrada.tipo_trabajo_ot }}">{{ orden_encontrada.tipo_trabajo_ot }}</option>
+        {% else %}
+      <option value=""></option>
+      {% endif %}
+      {% for items in tipo_trabajo %}
+      <option value="{{ items }}" label="{{ items }}">{{ items }}</option>
+
+
+      {% endfor %}
+
+      </select>
+      {% for items in tipo_trabajo %}
+      <input type="hidden" id="{{ items }}" value="{{ items.materiales_adicionales }}" name="{{ items.insumo }}">
+      {% endfor %}
+    </td>
+
+      <td colspan="2"><label for="">Cantidad:</label></td>
+      <td colspan="2">{{ orden.cantidad_ot }}</td>
+
+
+      </tr>
+
+      </table>
+      <table class="table table-bordered solido">
+
+        <thead>
+          <th colspan="8" style="color:darkblue;text-align:center"><strong>MATERIALES</strong></th>
+        </thead>
+      <tr>
+        <td><label for="">Material</label></td>
+        <td> <label for="">Descripcion</label> </td>
+        <td> <label for="">Medida</label> </td>
+        <td> <label for="">Troquelado</label></td>
+      </tr>
+      <tr>
+        <td>
+        <select  name="material1" {% if aprobada %} disabled {% endif %}  required>
+          {% if busqueda %}
+          <option value="{{ orden_encontrada.material_ot }}">{{ orden_encontrada.material_ot }}</option>
+          {% else %}
+        <option value=""></option>
+        {% endif %}
+          {% for material in materiales %}
+          <option value="{{ material }}">{{ material }}</option>
+{% endfor %}
+        </select> </td>
+        {% if busqueda %}
+        <td> <input type="text" name="descripcion"  {% if aprobada %} disabled {% endif %} value="{{orden_encontrada.descripcion_material_ot }}" required> </td>
+        {% else %}
+    <td> <input type="text" name="descripcion" value="" required> </td>
+      {% endif %}
+      {% if busqueda %}
+      <td> <input type="number" step="0.01"  {% if aprobada %} disabled {% endif %} pattern="\d+" name="alto1" value="{{ orden_encontrada.medida_alto_ot }}" required> X <input type="number" {% if aprobada %} disabled {% endif %} step="0.01" pattern="\d+" name="ancho1" value="{{ orden_encontrada.medida_ancho_ot }}" required> </td>
+      {% else %}
+  <td> <input type="number" step="0.01" pattern="\d+" name="alto1" value="" required> X <input type="number" step="0.01" pattern="\d+" name="ancho1" value="" required> </td>
+    {% endif %}
+<td>
+    <select required class="" name="troquel1">
+      {% if busqueda %}
+      <option value="{{ orden_encontrada.troquelado_ot }}">{{ orden_encontrada.troquelado_ot }}</option>
+      {% endif %}
+      <option value=""></option>
+      <option value="sin troquelar">sin troquelar</option>
+      <option value="troquel existente">troquel existente</option>
+      <option value="troquel nuevo">troquel nuevo</option>
+    </select>
+      </td>
+      <td {% if aprobada %} style="display:none" {% endif %} id="boton_agregar"> <img  src="{% static "mas.png"%}" {% if aprobada %} disabled {% endif %} alt="+" onclick="agregar1()" style="width:30px;height:auto"> </td>
+</tr>
+{% if busqueda and orden_encontrada.material2_ot %}
+<tr id="luno">
+{% else %}
+<tr id="luno" style="display:none">
+{% endif %}
+
+  <td>
+  <select  name="material2" id="material1">
+    {% if busqueda %}
+    <option value="{{ orden_encontrada.material2_ot }}">{{ orden_encontrada.material2_ot }}</option>
+    {% else %}
+  <option value=""></option>
+  {% endif %}
+    {% for material in materiales %}
+    <option value="{{ material }}">{{ material }}</option>
+{% endfor %}
+  </select> </td>
+  {% if busqueda == True %}
+  <td> <input type="text" name="descripcion2" value="{{orden_encontrada.descripcion_material2_ot }}" id="descripcion1"> </td>
+  {% else %}
+<td> <input type="text" name="descripcion2" value="" id="descripcion1"> </td>
+{% endif %}
+{% if busqueda == True %}
+<td> <input type="number" name="alto2" step="0.01" pattern="\d+" value="{{orden_encontrada.medida_alto_2_ot }}" id="alto1"> X <input type="number" {% if aprobada %} disabled {% endif %} step="0.01" pattern="\d+" value="{{orden_encontrada.medida_ancho_2_ot }}" name="ancho2" id="ancho1"> </td>
+{% else %}
+<td> <input type="number" name="alto2" step="0.01" pattern="\d+" value=0.0 id="alto1"> X <input type="number" step="0.01" pattern="\d+" value=0.0 name="ancho2" id="ancho1"> </td>
+{% endif %}
+<td>
+<select class="" name="troquel2" id="troquelado1">
+{% if busqueda %}
+<option value="{{ orden_encontrada.troquelado2_ot }}">{{ orden_encontrada.troquelado2_ot }}</option>
+{% endif %}
+<option value=""></option>
+<option value="sin troquelar">sin troquelar</option>
+<option value="troquel existente">troquel existente</option>
+<option value="troquel nuevo">troquel nuevo</option>
+</select>
+</td>
+<td {% if aprobada %} style="display:none" {% endif %}> <img src="{% static "mas.png"%}" alt="+" onclick="agregar2()" style="width:30px;height:auto;margin-top:25px">
+ <img id="boton_quitar" src="{% static "menos.png"%}" alt="-" onclick="quitar1()" style="width:30px;height:auto;margin-top:25px"> </td>
+</tr>
+
+
+{% if busqueda and orden_encontrada.material3_ot %}
+<tr id="ldos">
+{% else %}
+<tr id="ldos" style="display:none">
+{% endif %}
+
+<td>
+<select  name="material3" {% if aprobada %} disabled {% endif %} id="material2">
+  {% if busqueda %}
+  <option value="{{ orden_encontrada.material3_ot }}">{{ orden_encontrada.material3_ot }}</option>
+  {% else %}
+<option value=""></option>
+{% endif %}
+  {% for material in materiales %}
+  <option value="{{ material }}">{{ material }}</option>
+{% endfor %}
+</select> </td>
+{% if busqueda %}
+<td> <input type="text" name="descripcion3"  {% if aprobada %} disabled {% endif %} value="{{orden_encontrada.descripcion_material3_ot }}" id="descripcion2"> </td>
+{% else %}
+<td> <input type="text" name="descripcion3" value="" id="descripcion2"> </td>
+{% endif %}
+{% if busqueda == True %}
+<td> <input type="number" name="alto3" {% if aprobada %} disabled {% endif %} step="0.01" pattern="\d+" value="{{orden_encontrada.medida_alto_3_ot }}" id="alto2"> X <input type="number" step="0.01" {% if aprobada %} disabled {% endif %} pattern="\d+" name="ancho3" value="{{orden_encontrada.medida_ancho_3_ot }}" id="ancho2"> </td>
+{% else %}
+<td> <input type="number" name="alto3" step="0.01" pattern="\d+" value=0.0 id="alto2"> X <input type="number" step="0.01" pattern="\d+" name="ancho3" value=0.0 id="ancho2"> </td>
+{% endif %}
+<td>
+<select class="" name="troquel3" id="troquelado2">
+{% if busqueda %}
+<option value="{{ orden_encontrada.troquelado3_ot }}">{{ orden_encontrada.troquelado3_ot }}</option>
+{% endif %}
+<option value=""></option>
+<option value="sin troquelar">sin troquelar</option>
+<option value="troquel existente">troquel existente</option>
+<option value="troquel nuevo">troquel nuevo</option>
+</select>
+</td>
+<td {% if aprobada %} style="display:none" {% endif %}> <img src="{% static "mas.png"%}" alt="+" onclick="agregar3()" style="width:30px;height:auto;margin-top:35px">
+<img id="boton_quitar2" src="{% static "menos.png"%}" alt="-" onclick="quitar2()" style="width:30px;height:auto;margin-top:35px"> </td>
+</tr>
+
+
+{% if busqueda and orden_encontrada.material4_ot %}
+<tr id="ltres">
+{% else %}
+<tr id="ltres" style="display:none">
+{% endif %}
+
+<td>
+<select  name="material4" {% if aprobada %} disabled {% endif %} id="material3">
+  {% if busqueda %}
+  <option value="{{ orden_encontrada.material4_ot }}">{{ orden_encontrada.material4_ot }}</option>
+  {% else %}
+<option value=""></option>
+{% endif %}
+  {% for material in materiales %}
+  <option value="{{ material }}">{{ material }}</option>
+{% endfor %}
+</select> </td>
+{% if busqueda %}
+<td> <input type="text" name="descripcion4"  {% if aprobada %} disabled {% endif %} value="{{orden_encontrada.descripcion_material4_ot }}" id="descripcion3"> </td>
+{% else %}
+<td> <input type="text" name="descripcion4" value="" id="descripcion3"> </td>
+{% endif %}
+{% if busqueda == True and orden_encontrada.medida_alto_4_ot != "" %}
+<td> <input type="number" name="alto4" {% if aprobada %} disabled {% endif %} step="0.01" pattern="\d+" value="{{orden_encontrada.medida_alto_4_ot }}" id="alto3"> X <input type="number" {% if aprobada %} disabled {% endif %} step="0.01" pattern="\d+" name="ancho4" value="{{orden_encontrada.medida_ancho_4_ot }}" id="ancho3"> </td>
+{% else %}
+<td> <input type="number" name="alto4" step="0.01" pattern="\d+" value=0.0 id="alto3"> X <input type="number" step="0.01" pattern="\d+" name="ancho4" value=0.0 id="ancho3"> </td>
+{% endif %}
+<td>
+<select class="" name="troquel4" id="troquelado3">
+{% if busqueda %}
+<option value="{{ orden_encontrada.troquelado4_ot }}">{{ orden_encontrada.troquelado4_ot }}</option>
+{% endif %}
+<option value=""></option>
+<option value="sin troquelar">sin troquelar</option>
+<option value="troquel existente">troquel existente</option>
+<option value="troquel nuevo">troquel nuevo</option>
+</select>
+</td>
+<td {% if aprobada %} style="display:none" {% endif %}> <img src="{% static "mas.png"%}" alt="+" onclick="agregar4()" style="width:30px;height:auto;margin-top:45px">
+<img id="boton_quitar3" src="{% static "menos.png"%}" alt="-" onclick="quitar3()" style="width:30px;height:auto;margin-top:45px"> </td>
+</tr>
+
+
+
+{% if busqueda and orden_encontrada.material5_ot %}
+<tr id="lcuatro">
+{% else %}
+<tr id="lcuatro" style="display:none">
+{% endif %}
+
+<td>
+<select  name="material5" {% if aprobada %} disabled {% endif %} id="material4">
+  {% if busqueda %}
+  <option value="{{ orden_encontrada.material5_ot }}">{{ orden_encontrada.material5_ot }}</option>
+  {% else %}
+<option value=""></option>
+{% endif %}
+  {% for material in materiales %}
+  <option value="{{ material }}">{{ material }}</option>
+{% endfor %}
+</select> </td>
+{% if busqueda %}
+<td> <input type="text" name="descripcion5"  {% if aprobada %} disabled {% endif %} value="{{orden_encontrada.descripcion_material5_ot }}" id="descripcion4"> </td>
+{% else %}
+<td> <input type="text" name="descripcion5" value="" id="descripcion4"> </td>
+{% endif %}
+{% if busqueda == True and orden_encontrada.medida_alto_5_ot != ""%}
+<td> <input type="number" name="alto5" {% if aprobada %} disabled {% endif %} step="0.01" pattern="\d+" value="{{orden_encontrada.medida_alto_5_ot }}" id="alto4"> X <input type="number" step="0.01" {% if aprobada %} disabled {% endif %} pattern="\d+" name="ancho5" value="{{orden_encontrada.medida_ancho_5_ot }}" id="ancho4"> </td>
+{% else %}
+<td> <input type="number" name="alto5" step="0.01" pattern="\d+" value=0.0 id="alto4"> X <input type="number" step="0.01" pattern="\d+" name="ancho5" value=0.0 id="ancho4"> </td>
+{% endif %}
+<td>
+<select class="" name="troquel5" id="troquelado4">
+{% if busqueda %}
+<option value="{{ orden_encontrada.troquelado5_ot }}">{{ orden_encontrada.troquelado5_ot }}</option>
+{% endif %}
+<option value=""></option>
+<option value="sin troquelar">sin troquelar</option>
+<option value="troquel existente">troquel existente</option>
+<option value="troquel nuevo">troquel nuevo</option>
+</select>
+</td>
+
+<td {% if aprobada %} style="display:none" {% endif %}>
+ <img id="boton_quitar4" src="{% static "menos.png"%}" alt="-" onclick="quitar4()" style="width:30px;height:auto;margin-top:25px"> </td>
+</tr>
+
+</table>
+
+<table class="table table-bordered solido">
+
+  <tr>
+    <td>
+      {% if ver_cinta.4 == "roja" or ver_cinta.4 == "blanca" %}
+      <div class="form-check form-check-inline">
+  <input class="form-check-input" {% if aprobada %} disabled {% endif %} type="radio" name="inlineRadioOptions" id="sin_cinta" value="sin_cinta" onclick="check()">
+  <label class="form-check-label" for="inlineRadio1">sin cinta</label>
+  </div>
+  <div class="form-check form-check-inline">
+  <input required class="form-check-input" {% if aprobada %} disabled {% endif %} type="radio" name="inlineRadioOptions" id="con_cinta" value="con_cinta"  onclick="check()" checked>
+  <label class="form-check-label" for="inlineRadio2"  >con cinta</label>
+  </div>
+  <td> <select {% if aprobada %} disabled {% endif %} class="" id="tipo_cinta" name="tipo_cinta">
+
+    <option  value="{{ver_cinta.3}} {{ver_cinta.4_ot }}">{{ver_cinta.3}} {{ver_cinta.4}}</option>
+
+  <option value="cinta roja">Cinta roja</option>
+  <option value="cinta blanca">Cinta blanca</option>
+
+
+</select> <input required type="number" {% if aprobada %} readonly {% endif %} step="1" pattern="\d+" id="cantidad_cintas" name="cantidad_cintas" value="{{ver_cinta.0}}" placeholder="cantidad de cintas"> <label for="">de</label> <input type="number" {% if aprobada %} readonly {% endif %} step="0.01" pattern="\d+" id="cm_cintas" name="cm_cintas" value="{{ver_cinta.6}}" placeholder="cm de c/cinta" required> </td>
+<p style="position:relative">{{ orden.tipo_impresion }}</p>
+{% else %}
+      <div class="form-check form-check-inline">
+  <input class="form-check-input" {% if aprobada %} disabled {% endif %} type="radio" name="inlineRadioOptions" id="sin_cinta" value="sin_cinta" onclick="check()" {% if busqueda %} checked {% endif %}>
+  <label class="form-check-label" for="inlineRadio1"  >sin cinta</label>
+  </div>
+  <div class="form-check form-check-inline">
+  <input required class="form-check-input" {% if aprobada %} disabled {% endif %} type="radio" name="inlineRadioOptions" id="con_cinta" value="con_cinta" onclick="check()">
+  <label class="form-check-label" for="inlineRadio2">con cinta</label>
+  </div>
+  <td> <select class="" id="tipo_cinta" name="tipo_cinta" disabled>
+
+
+
+  <option value="cinta roja">Cinta roja</option>
+  <option value="cinta blanca">Cinta blanca</option>
+
+
+</select> <input required type="number" step="1" pattern="\d+" id="cantidad_cintas" name="cantidad_cintas" value="" placeholder="cantidad de cintas" disabled> <label for="">de</label> <input type="number" step="0.01" pattern="\d+" id="cm_cintas" name="cm_cintas" value="" placeholder="cm de c/cinta" disabled required> </td>
+{% endif %}</td>
+
+
+
+    <td id="adicional_row" style="display:none"> <input type="text" id="adicional" name="adicional" value="" placeholder="" ><input type="hidden" id="adicional_texto" name="adicional_texto" value=""> </td>
+
+</tr>
+
+
+
+      <tr>
+
+        {% if busqueda %}
+        <td colspan="1"> <textarea name="detalles" rows="5" cols="60" placeholder="Detalles adicionales:">{{ orden_encontrada.detalles_ot }}</textarea>  </td>
+        {% else %}
+        <td colspan="1"> <textarea name="detalles" rows="5" cols="60" placeholder="Detalles adicionales:"></textarea> </td>
+        {% endif %}
+        <td><p> <strong> Adjuntos: </strong></p>
+          <p style="position:relative">Arte {{ orden.arte }}</p>
+
+       <p style="position:relative"> Prueba de color {{ orden.prueba_de_color }}</p></td>
+
+    </tr>
+    </table>
+    <div class="container">
+
+
+    <input type="submit" name="Solicitar" class="btn btn-primary" value="SOLICITAR">
+    </div>
+</form>
+
+{% else %}
+<h2>SOLICITUD #{{ numero_solicitud.num_solicitud_ot }} SOLICITADA CON EXITO!</h2>
+<form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  <input type="hidden" name="cot_reutilizar_ult" value="{{ numero_solicitud.num_solicitud_ot }}">
+  <p style="text-align:center;margin:40px"><input type="submit" name="regresar" value="NUEVA SOLICITUD" class="btn btn-primary btn-lg"> <input type="submit" name="reutilizar" value="REUTILIZAR ULTIMA ORDEN" class="btn btn-danger btn-lg"></p>
+</form>
+
+{% endif %}
+{% endblock %}
