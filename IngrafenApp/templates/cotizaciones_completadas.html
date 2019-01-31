@@ -349,17 +349,16 @@
 
 <input type="hidden" name="cot_ver" value="{{ cotizacion.num_solicitud }}">
 {% endfor %}
-<<<<<<< HEAD
+
 
   <input type="submit" name="reutilizar" value="REUTILIZAR" class="btn btn-success" >
 
 
-=======
-  <input type="submit" name="regresar" value="REGRESAR" class="btn btn-primary" >
-  <input type="submit" name="reutilizar" value="REUTILIZAR" class="btn btn-success" >
+
+  
 
 
->>>>>>> 6006d8a93f57e0c347be39fe52a2e53416a1908b
+
  {% if user.categoria == "VEN" and cotizacion.solicitud_ot == "" %}
   <input type="submit" name="solicitar" value="Solicitar OT" class="btn btn-danger">
 
