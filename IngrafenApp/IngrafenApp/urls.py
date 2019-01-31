@@ -53,7 +53,10 @@ urlpatterns = [
     path("ordenes_por_aperturar_gig",views.ordenes_por_aperturar_gig,name="ordenes_por_aperturar_gig"),
     path("ordenes_en_proceso_gig/",views.ordenes_en_proceso_gig,name="ordenes_en_proceso_gig"),
     path("ordenes_sin_fecha_gig/",views.ordenes_sin_fecha_gig,name="ordenes_sin_fecha_gig"),
+<<<<<<< HEAD
     path("ordenes_aperturadas_gig/",views.ordenes_aperturadas_gig,name="ordenes_aperturadas_gig"),
+=======
+>>>>>>> 6006d8a93f57e0c347be39fe52a2e53416a1908b
 
 
 ]

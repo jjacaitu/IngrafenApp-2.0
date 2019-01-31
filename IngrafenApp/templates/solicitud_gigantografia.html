@@ -7,6 +7,11 @@
 <div class="jumbotron">
 
 
+<<<<<<< HEAD
+=======
+  <label for="">SOLICITUD DE ORDEN: </label>
+
+>>>>>>> 6006d8a93f57e0c347be39fe52a2e53416a1908b
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
     <div class="container">
@@ -378,12 +383,17 @@
 </form>
 
 {% else %}
+<<<<<<< HEAD
 <h2>SOLICITUD #{{ numero_solicitud.num_solicitud_ot }} SOLICITADA CON EXITO!</h2>
 <form enctype="multipart/form-data" method="POST">
   {% csrf_token %}
   <input type="hidden" name="cot_reutilizar_ult" value="{{ numero_solicitud.num_solicitud_ot }}">
   <p style="text-align:center;margin:40px"><input type="submit" name="regresar" value="NUEVA SOLICITUD" class="btn btn-primary btn-lg"> <input type="submit" name="reutilizar" value="REUTILIZAR ULTIMA ORDEN" class="btn btn-danger btn-lg"></p>
 </form>
+=======
+<h2>SOLICITUD CON EXITO!</h2>
+
+>>>>>>> 6006d8a93f57e0c347be39fe52a2e53416a1908b
 
 {% endif %}
 {% endblock %}
