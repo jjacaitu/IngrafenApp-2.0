@@ -7,7 +7,7 @@
     {% csrf_token %}
 <p style="text-align:center;margin:40px"><input type="submit" name="" value="CREAR NUEVO MATERIAL" class="btn btn-danger btn-lg"></p>
     </form>
-  {% elif user.categoria == "ADM" %}
+  {% elif user.categoria == "ADM" or user.categoria == "COT" %}
   <h2>INGRESO DE MATERIALES:</h2>
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}

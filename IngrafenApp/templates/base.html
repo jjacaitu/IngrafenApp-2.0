@@ -94,7 +94,6 @@
         <div class="dropdown-divider"></div>
         <a class="dropdown-item"  href="{% url "ordenes_por_aperturar" %}">Ordenes por aperturar {% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_existentes|length }}</span>{% endif %}</a>
         <div class="dropdown-divider"></div>
-
         <a class="dropdown-item" href="{% url "ordenes_aperturadas" %}">Ordenes aperturadas</a>
         <div class="dropdown-divider"></div>
         <div class="dropdown-divider"></div>
@@ -108,14 +107,6 @@
         <a class="dropdown-item" href="{% url "ordenes_por_aperturar_gig" %}">Ordenes por aperturar Gigantografia {% if user.categoria != "VEN" %}<span class="badge badge-light" style="margin:3px">{{ ordenes_existentes_gig|length }}</span>{% endif %}</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url "ordenes_aperturadas_gig" %}">Ordenes aperturadas Gigantografia</a>
-
-        
-        <div class="dropdown-divider"></div>
-        {% endif %}
-
-        {% if user.is_authenticated %}
-
-
         {% if user.categoria != "PRO" %}
         <div class="dropdown-divider"></div>
         <div class="dropdown-divider"></div>
@@ -151,6 +142,7 @@
         <a class="dropdown-item" href="{% url "ordenes_aperturadas" %}">Ordenes aperturadas</a>
 
         {% endif %}
+        {% endif %}
 
         {% if user.categoria == "COT" or user.categoria == "ADM" %}
         <li class="nav-item">
@@ -165,14 +157,16 @@
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Administracion</a>
       <div class="dropdown-menu">
         {% endif %}
+        {% if user.categoria == "ADM" %}
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url 'reportes' %}">Reportes</a>
+
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url 'creacion_usuario' %}">Registrar nuevo usuario</a>
+        {% endif %}
         {% if user.categoria == "COT" or user.categoria == "ADM" %}
         <a class="dropdown-item" href="{% url 'crear_material' %}">Crear Material</a>
         <a class="dropdown-item" href="{% url 'crear_trabajo' %}">Crear Tipo de trabajo</a>
-<<<<<<< HEAD
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url 'crear_material_gig' %}">Crear Material Gigantografia</a>
         <a class="dropdown-item" href="{% url 'crear_trabajo_gig' %}">Crear Tipo de trabajo Gigantografia</a>
@@ -181,11 +175,7 @@
           <a class="dropdown-item" href="{% url 'creacion_cliente_ot' %}">Registrar cliente OT</a>
           <div class="dropdown-divider"></div>
         {% endif %}
-=======
-        <a class="dropdown-item" href="{% url 'crear_material_gig' %}">Crear Material Gigantografia</a>
-        <a class="dropdown-item" href="{% url 'crear_trabajo_gig' %}">Crear Tipo de trabajo Gigantografia</a>
-        <a class="dropdown-item" href="{% url 'crear_cliente' %}">Crear Cliente</a>
->>>>>>> 6006d8a93f57e0c347be39fe52a2e53416a1908b
+        {% if user.categoria == "ADM" %}
         <a class="dropdown-item" href="{% url 'bloqueo_clientes' %}">Bloquear Cliente</a>
         <a class="dropdown-item" href="{% url 'cambio_contraseña' %}">Cambiar contraseña</a>
 

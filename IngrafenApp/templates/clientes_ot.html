@@ -7,7 +7,7 @@
     {% csrf_token %}
 <p style="text-align:center;margin:40px"><input type="submit" name="" value="CREAR NUEVO CLIENTE" class="btn btn-danger btn-lg"></p>
     </form>
-  {% elif user.categoria == "ADM" or user.username == "Mmaldonado" %}
+  {% elif user.categoria == "ADM" or or user.categoria == "COT" %}
   <h2>CREACION DE CLIENTES PARA ORDENES DE TRABAJO:</h2>
   <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
