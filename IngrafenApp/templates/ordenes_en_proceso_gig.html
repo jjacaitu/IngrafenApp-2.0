@@ -216,6 +216,17 @@
   <input type="text" name="cantidad_entregada" required>
 
   <input type="submit" name="boton_parcial" value="ENTREGA PARCIAL" class="btn btn-primary">
+</form>
+  {% if user.categoria == "PRO" or user.categoria == "ADM" %}
+  <form enctype="multipart/form-data" method="POST">
+
+    {% csrf_token %}
+    <label for="orden_papyrus">Fecha de entrega: </label>
+    <input type="date" name="fecha" min="{{ hoy }}" required>
+
+    <input type="submit" name="boton_fecha" value="ESTABLECER FECHA DE ENTREGA" class="btn btn-primary">
+
+    {% endif %}
 
   {% endif %}
   </form>
@@ -235,12 +246,17 @@
   {% csrf_token %}
   {% for orden in orden_existentes %}
 <input type="hidden" name="numero1" value= {{ orden.num_solicitud_ot }}>
-{% endfor %}
+
   <p style="text-align:center">
     <input type="submit" name="boton_terminado" value="ORDEN TERMINADA" class="btn btn-primary btn-lg">
   <input type="submit" name="boton_cerrar" value="CERRAR OT" class="btn btn-danger btn-lg"></p>
 
-</form>
+    {% if user.categoria != "VEN" %}
+    <p style="text-align:center"><input type="submit" name="borrar" value={% if orden.permiso_borrar == True %}"DESHABILITAR ELIMINACION"{% else %}"HABILITAR ELIMINACION"{% endif %} class="btn btn-warning btn-lg"></p>
+      {% endif %}
+
+{% endfor %}
+
 {% endif %}
 </div>
 

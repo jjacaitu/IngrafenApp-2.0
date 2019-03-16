@@ -54,6 +54,9 @@ urlpatterns = [
     path("ordenes_en_proceso_gig/",views.ordenes_en_proceso_gig,name="ordenes_en_proceso_gig"),
     path("ordenes_sin_fecha_gig/",views.ordenes_sin_fecha_gig,name="ordenes_sin_fecha_gig"),
     path("ordenes_aperturadas_gig/",views.ordenes_aperturadas_gig,name="ordenes_aperturadas_gig"),
+    path("bloqueo_usuario/",views.bloqueo_usuario,name="bloqueo_usuario"),
+    path("cambio_vendedor/",views.cambio_vendedor,name="cambio_vendedor"),
+    path("modificar/",views.modificar,name="modificar"),
 
 
 ]

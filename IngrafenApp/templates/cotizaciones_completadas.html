@@ -6,7 +6,7 @@
   <input type="text" id="parametro" name="parametro" value="" style="display:none" placeholder="Buscar por:">
   <select id="cl" name="cl" style="display:none">
     {% for clientes in clientes_creados %}
-    {% if user.categoria == "ADM"%}
+    {% if user.categoria != "VEN"%}
     <option value="{{ clientes.nombre }}">{{ clientes.nombre }}</option>
     {% else %}
     {% if clientes.vendedor_asociado == user %}

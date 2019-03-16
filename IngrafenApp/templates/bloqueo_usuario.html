@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  {% if bloqueado %}
+  <h2>CLIENTE {{ texto }} CON EXITO!</h2>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+
+    </form>
+  {% elif user.categoria == "ADM" %}
+  <h2>BLOQUEO DE CLIENTES:</h2>
+  <form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <div class="container">
+      <label for="">Usuario: </label>
+      <select class="" name="usuario">
+        <option value=""></option>
+        {% for usuario in usuarios %}
+        <option value="{{ usuario.username }}">{{ usuario.username }}</option>
+        {% endfor %}
+
+      </select>
+<input type="submit" name="bloqueo" value="Bloquear" class="btn btn-primary">
+    </div>
+    <div class="container">
+      <label for="">Usuario: </label>
+      <select class="" name="usuario_bloq">
+        <option value=""></option>
+        {% for usuario in usuarios_bloq %}
+        <option value="{{ usuario.username }}">{{ usuario.username }}</option>
+        {% endfor %}
+
+      </select>
+    <input type="submit" name="desbloqueo" value="Desbloquear" class="btn btn-primary">
+      </div>
+  </form>
+{% endif %}
+
+</div>
+{% endblock %}

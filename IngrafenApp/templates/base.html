@@ -174,10 +174,14 @@
         <a class="dropdown-item" href="{% url 'crear_cliente' %}">Crear Cliente Cotizaciones</a>
           <a class="dropdown-item" href="{% url 'creacion_cliente_ot' %}">Registrar cliente OT</a>
           <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'modificar' %}">Modificar informacion</a>
+            <div class="dropdown-divider"></div>
         {% endif %}
         {% if user.categoria == "ADM" %}
         <a class="dropdown-item" href="{% url 'bloqueo_clientes' %}">Bloquear Cliente</a>
         <a class="dropdown-item" href="{% url 'cambio_contraseña' %}">Cambiar contraseña</a>
+        <a class="dropdown-item" href="{% url 'bloqueo_usuario' %}">Bloquear Usuario</a>
+        <a class="dropdown-item" href="{% url 'cambio_vendedor' %}">Cambiar cliente de vendedor</a>
 
   </li>
         {% endif %}

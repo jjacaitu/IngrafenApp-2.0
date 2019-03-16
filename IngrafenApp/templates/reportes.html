@@ -109,8 +109,12 @@
 <h2>Ordenes por vendedor</h2>
 <canvas id="myChart4" height="100"></canvas></div>
 
+<div class="container">
+
 <h2>Ordenes Gigantografia por cotizador</h2>
 <canvas id="myChart5" height="100"></canvas></div>
+
+<div class="container">
 
 <h2>Ordenes Gigantografia por vendedor</h2>
 <canvas id="myChart6" height="100"></canvas></div>
@@ -122,7 +126,14 @@ var labels_names = {{ labels_names|safe }};
 var titles = {{ titles|safe }};
 var datos_ot = {{ datas_ot }};
 var titles_ot = {{ titles_ot|safe }};
+var datos_ventas = {{ datas_vendedores }};
+var titles_ventas = {{ titles_vendedores|safe }};
+var datos_ventas_ot = {{ datas_vendedores_ot }};
+var titles_ventas_ot = {{ titles_vendedores_ot|safe }};
+var datos_ventas_ot_gig = {{ datas_vendedores_ot_gig }};
+var datos_ot_gig = {{ datas_ot_gig }};
 var colors = ["#ede50b","#060c84","#77040e","#026017","#09bc31","#e06608","#4b8ffc","#5e29c6","#c62981","#fff200","#7cff02","#00ffff"]
+var colors2 = ["#ede50b","#060c84","#77040e","#026017","#09bc31","#e06608","#4b8ffc","#5e29c6","#c62981","#fff200","#7cff02","#00ffff"]
 function getRandomArbitrary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
@@ -173,9 +184,7 @@ var myChart = new Chart(ctx, {
     }
 }});
 
-var datos_ventas = {{ datas_vendedores }};
 
-var titles_ventas = {{ titles_vendedores|safe }};
 
 
 
@@ -250,9 +259,7 @@ var myChart3 = new Chart(ctx3, {
     }
 }});
 
-var datos_ventas_ot = {{ datas_vendedores_ot }};
 
-var titles_ventas_ot = {{ titles_vendedores_ot|safe }};
 
 var ctx4 = document.getElementById("myChart4").getContext('2d');
 var myChart4 = new Chart(ctx4, {
@@ -262,44 +269,6 @@ var myChart4 = new Chart(ctx4, {
         datasets: [{
             label: titles_ventas_ot[0],
             data: datos_ventas_ot[0],
-            backgroundColor:
-                "#f72020"
-            ,
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }],
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-          xAxes: [{
-              stacked: true
-          }],
-          yAxes: [{
-              stacked: true
-          }]
-      }
-    }
-}});
-
-var datos_ventas_ot_gig = {{ datas_vendedores_ot_gig }};
-var datos_ot_gig = {{ datas_ot_gig }};
-
-var ctx6 = document.getElementById("myChart6").getContext('2d');
-var myChart6 = new Chart(ctx6, {
-    type: 'bar',
-    data: {
-        labels: labels_names,
-        datasets: [{
-            label: titles_ventas_ot[0],
-            data: datos_ventas_ot_gig[0],
             backgroundColor:
                 "#f72020"
             ,
@@ -361,6 +330,43 @@ var myChart5 = new Chart(ctx5, {
       }
     }
 }});
+
+var ctx6 = document.getElementById("myChart6").getContext('2d');
+var myChart6 = new Chart(ctx6, {
+    type: 'bar',
+    data: {
+        labels: labels_names,
+        datasets: [{
+            label: titles_ventas[0],
+            data: datos_ventas_ot_gig[0],
+            backgroundColor:
+                "#f72020"
+            ,
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+          xAxes: [{
+              stacked: true
+          }],
+          yAxes: [{
+              stacked: true
+          }]
+      }
+    }
+}});
+
+
 for (i = 1; i < titles.length; i++) {
   addData(myChart, titles[i], colors.pop(getRandomArbitrary(0,12)), datos[i]);
 
@@ -382,12 +388,12 @@ for (i = 1; i < titles_ot.length; i++) {
 }
 
 for (i = 1; i < titles_ot.length; i++) {
-  addData(myChart5, titles_ventas_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_vendedores_ot_gig[i]);
+  addData(myChart5, titles_ot[i], colors2.pop(getRandomArbitrary(0,12)), datos_ot_gig[i]);
 
 }
 
-for (i = 1; i < titles_ot.length; i++) {
-  addData(myChart6, titles_ot[i], colors.pop(getRandomArbitrary(0,12)), datos_ot_gig[i]);
+for (i = 1; i < titles_ventas_ot.length; i++) {
+  addData(myChart6, titles_ventas_ot[i], colors2.pop(getRandomArbitrary(0,12)), datos_ventas_ot_gig[i]);
 
 }
 

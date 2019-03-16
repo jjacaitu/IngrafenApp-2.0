@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% if cambiado == False %}
+<h2>CAMBIO REALIZADO CON EXITO</h2>
+{% else %}
+<div class="jumbotron">
+  <h2>ACCESO A MODIFICACION</h2>
+<table>
+
+<tr>
+
+
+  <form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  <td>
+  <label for="">TIPO DE SOLICITUD: </label></td>
+  <td>
+  <select required class="" name="tipo">
+    <option value=""></option>
+
+    <option value="Orden">Orden</option>
+    <option value="Cotizacion">Cotizacion</option>
+    <option value="Orden Gigantografia">Gigantografia</option>
+
+  </select>
+  <input type="text" required name="item" value="">
+  </td><td>
+  <input type="submit" name="Buscar" value="BUSCAR" class="btn btn-danger btn-sm" ></input>
+</td>
+  </form>
+
+
+
+{% if busqueda  %}
+<tr>
+
+
+  <form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+
+    {% if tipo == "Orden" %}
+    <input type="hidden" name="encontrado_orden" value="{{ encontrado.num_solicitud_ot }}">
+    {% elif tipo == "Cotizacion" %}
+    <input type="hidden" name="encontrado_cot" value="{{ encontrado.num_solicitud }}">
+    {% elif tipo == "Orden Gigantografia" %}
+    <input type="hidden" name="encontrado_gig" value="{{ encontrado.num_solicitud_ot }}">
+    {% endif %}
+
+    {% if tipo == "Orden" %}
+    {% if encontrado.numero_cotizacion_ot != "" %}
+  <td><label for=""># COTIZACION PAPYRUS: </label></td>
+  <td>
+  <input type="" name="cot_pap" required value="{{ encontrado.numero_cotizacion_ot }}">
+</td>
+{% endif %}
+{% if encontrado.num_ot_relacionada != "" %}
+<td>
+<label for=""># ORDEN: </label></td>
+<td>
+<input type="" name="ot" required value="{{ encontrado.num_ot_relacionada }}">
+</td>
+{% endif %}
+
+{% elif tipo == "Cotizacion" %}
+{% if encontrado.numero_cotizacion != "" %}
+<td>
+<label for=""># COTIZACION PAPYRUS: </label></td>
+<td>
+<input type="" name="cot_pap" required value="{{ encontrado.numero_cotizacion }}">
+</td>
+{% endif %}
+{% if encontrado.num_ot_relacionada != "" %}
+<td>
+<label for=""># ORDEN: </label></td>
+<td>
+<input type="" name="ot" required value="{{ encontrado.num_ot_relacionada }}">
+</td>
+{% endif %}
+
+{% elif tipo == "Orden Gigantografia" %}
+{% if encontrado.num_ot_relacionada != "" %}
+<td>
+<label for=""># ORDEN: </label></td>
+<td>
+<input type="" name="ot" required value="{{ encontrado.num_ot_relacionada }}">
+</td>
+{% endif %}
+{% endif %}
+<td>
+  <input type="submit" name="modificar" value="MODIFICAR" class="btn btn-danger btn-sm" ></input>
+
+</td></form>
+  </tr>
+{% endif %}
+{% endif %}
+
+
+
+
+</table>
+</div>
+
+{% endblock %}

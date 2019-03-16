@@ -16,6 +16,167 @@ from calendar import monthrange
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+@login_required
+def modificar(request):
+    cotizaciones_existentes = CotizacionesSolicitadas.objects.all().filter(cotizador__exact="")
+    ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
+    ordenes_proceso = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
+    ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+    ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
+    ordenes_existentes_gig = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
+    ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+    ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
+    cambiado = True
+    busqueda = False
+
+    if request.method == "POST" and request.POST.get("Buscar") == "BUSCAR":
+        try:
+            if request.POST.get("tipo") == "Orden":
+                busqueda = True
+                tipo = "Orden"
+                item = request.POST.get("item")
+                encontrado = models.OrdenesSolicitadas.objects.get(num_solicitud_ot = item)
+            if request.POST.get("tipo") == "Orden Gigantografia":
+                busqueda = True
+                tipo = "Orden Gigantografia"
+                item = request.POST.get("item")
+                encontrado = models.OrdenesGigantografia.objects.get(num_solicitud_ot = item)
+            if request.POST.get("tipo") == "Cotizacion":
+                busqueda = True
+                tipo = "Cotizacion"
+                item = request.POST.get("item")
+                encontrado = models.CotizacionesSolicitadas.objects.get(num_solicitud = item)
+            return render(request, "modificar.html",{"tipo":tipo,"busqueda":busqueda,"cambiado":cambiado,"encontrado":encontrado,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes, "cotizaciones_existentes":cotizaciones_existentes})
+
+        except:
+            busqueda = False
+            return render(request, "modificar.html",{"tipo":tipo,"busqueda":busqueda,"cambiado":cambiado,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes, "cotizaciones_existentes":cotizaciones_existentes})
+    if request.method == "POST" and request.POST.get("modificar") == "MODIFICAR":
+        if request.POST.get("encontrado_orden"):
+            item = models.OrdenesSolicitadas.objects.get(num_solicitud_ot=request.POST.get("encontrado_orden"))
+            try:
+                item.numero_cotizacion_ot = request.POST.get("cot_pap")
+                cambiado = False
+                item.save()
+            except:
+                pass
+            try:
+                item.num_ot_relacionada = request.POST.get("ot")
+                cambiado = False
+                item.save()
+            except:
+                pass
+
+        if request.POST.get("encontrado_cot"):
+            item = models.CotizacionesSolicitadas.objects.get(num_solicitud=request.POST.get("encontrado_cot"))
+            try:
+                item.numero_cotizacion = request.POST.get("cot_pap")
+                cambiado = False
+                item.save()
+            except:
+                pass
+            try:
+                item.num_ot_relacionada = request.POST.get("ot")
+                cambiado = False
+                item.save()
+            except:
+                pass
+
+        if request.POST.get("encontrado_gig"):
+            item = models.OrdenesGigantografia.objects.get(num_solicitud_ot=request.POST.get("encontrado_gig"))
+
+            try:
+                item.num_ot_relacionada = request.POST.get("ot")
+                cambiado = False
+                item.save()
+            except:
+                pass
+
+        busqueda = False
+        return render(request, "modificar.html",{"busqueda":busqueda,"cambiado":cambiado,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes, "cotizaciones_existentes":cotizaciones_existentes})
+
+    else:
+        return render(request, "modificar.html",{"busqueda":busqueda,"cambiado":cambiado,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes, "cotizaciones_existentes":cotizaciones_existentes})
+
+
+
+
+
+
+@login_required
+def cambio_vendedor(request):
+    cotizaciones_existentes = CotizacionesSolicitadas.objects.all().filter(cotizador__exact="")
+    ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
+    ordenes_proceso = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
+    ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+    ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
+    ordenes_existentes_gig = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
+    ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+    ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
+    clientes = models.Clientes.objects.all().order_by("nombre")
+    vendedores = models.Usuarios.objects.all().filter(categoria="VEN")
+    bloqueado = False
+    texto = ""
+    if request.method == "POST" and request.POST.get("cambiar") == "Cambiar":
+
+        cliente_cot = models.Clientes.objects.get(nombre=request.POST.get("cliente"))
+        usuario_a_usar = models.Usuarios.objects.get(username=request.POST.get("usuario"))
+        try:
+            cliente_ot = models.Clientes_ot.objects.get(nombre_razon_social=cliente_cot.nombre_razon_social)
+            cliente_ot.vendedor_asociado = usuario_a_usar.username
+            cliente_ot.save()
+        except:
+            pass
+        cliente_cot.vendedor_asociado = usuario_a_usar
+
+        cliente_cot.save()
+
+        texto = "CAMBIADO"
+        bloqueado = True
+
+    return render(request, "cambio_vendedor.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"texto":texto,"clientes":clientes,"vendedores":vendedores,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes, "bloqueado":bloqueado, "cotizaciones_existentes":cotizaciones_existentes})
+
+
+
+@login_required
+def bloqueo_usuario(request):
+    cotizaciones_existentes = CotizacionesSolicitadas.objects.all().filter(cotizador__exact="")
+    ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
+    ordenes_proceso = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
+    ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+    ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
+    ordenes_existentes_gig = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
+    ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+    ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
+    usuarios = models.Usuarios.objects.all().filter(bloqueado=False).exclude(username__exact="jjacaitu").exclude(username__exact="Fmanfredi")
+    usuarios_bloq = models.Usuarios.objects.all().filter(bloqueado=True).exclude(username__exact="jjacaitu").exclude(username__exact="Fmanfredi")
+    bloqueado = False
+    texto = ""
+    if request.method == "POST" and request.POST.get("bloqueo") == "Bloquear":
+
+        usuario_a_bloquear = models.Usuarios.objects.get(username=request.POST.get("usuario"))
+
+        usuario_a_bloquear.bloqueado = True
+        usuario_a_bloquear.is_active = False
+        usuario_a_bloquear.save()
+        texto = "BLOQUEADO"
+        bloqueado = True
+
+
+    if request.method == "POST" and request.POST.get("desbloqueo") == "Desbloquear":
+
+        usuario_a_bloquear = models.Usuarios.objects.get(username=request.POST.get("usuario_bloq"))
+        usuario_a_bloquear.bloqueado = False
+        usuario_a_bloquear.is_active = True
+        usuario_a_bloquear.save()
+        texto = "DESBLOQUEADO"
+        bloqueado = True
+
+
+
+    return render(request, "bloqueo_usuario.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"texto":texto,"usuarios_bloq":usuarios_bloq,"usuarios":usuarios,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"ordenes_existentes":ordenes_existentes, "bloqueado":bloqueado, "cotizaciones_existentes":cotizaciones_existentes})
+
+
 def ordenes_aperturadas_gig(request):
     ver = False
     ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
@@ -323,14 +484,14 @@ def ordenes_en_proceso_gig(request):
         else:
             ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
         print(ordenes_proceso)
-        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
+        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
     elif request.method == "POST" and request.POST.get("boton_regresar") == "REGRESAR":
         buscar=False
         if request.user.categoria == "VEN":
             ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(vendedor_ot=request.user).order_by("fecha_entrega_ot")
         else:
             ordenes_proceso_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
-        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
+        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
 
     elif request.method == "POST" and request.POST.get("boton_terminado") == "ORDEN TERMINADA":
         buscar=False
@@ -341,6 +502,29 @@ def ordenes_en_proceso_gig(request):
         orden.save()
         return HttpResponseRedirect(reverse('ordenes_en_proceso_gig'))
 
+    elif request.method == "POST" and request.POST.get("borrar") == "HABILITAR ELIMINACION":
+        buscar = True
+        numero_1 = request.POST.get("numero1")
+        orden_existentes = OrdenesGigantografia.objects.all().filter(num_solicitud_ot=numero_1)
+        ordenes_existentes = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
+        orden = OrdenesGigantografia.objects.get(num_solicitud_ot=numero_1)
+        orden.permiso_borrar = True
+        orden.save()
+
+        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_existentes":ordenes_existentes,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_1, "ordenes_existentes_gig":ordenes_existentes_gig})
+
+    elif request.method == "POST" and request.POST.get("borrar") == "DESHABILITAR ELIMINACION":
+        buscar = True
+        numero_1 = request.POST.get("numero1")
+        orden_existentes = OrdenesGigantografia.objects.all().filter(num_solicitud_ot=numero_1)
+        ordenes_existentes = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
+        orden = OrdenesGigantografia.objects.get(num_solicitud_ot=numero_1)
+        orden.permiso_borrar = False
+        orden.save()
+
+        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_existentes":ordenes_existentes,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_1, "ordenes_existentes_gig":ordenes_existentes_gig})
+
+
     elif request.method == "POST" and request.POST.get("boton_cerrar") == "CERRAR OT":
         buscar=False
         numero_1 = request.POST.get("numero1")
@@ -348,6 +532,20 @@ def ordenes_en_proceso_gig(request):
 
         orden.estado_ot = "Cerrada"
         orden.fecha_entregada = date.today()
+
+    elif request.method == "POST" and request.POST.get("boton_fecha") == "ESTABLECER FECHA DE ENTREGA":
+        buscar=False
+        numero_1 = request.POST.get("numero1")
+        orden = OrdenesGigantografia.objects.get(num_solicitud_ot=numero_1)
+
+        orden.fecha_entrega_ot = request.POST.get("fecha")
+
+
+
+
+
+        orden.save()
+        return HttpResponseRedirect(reverse('ordenes_en_proceso_gig'))
 
 
 
@@ -385,7 +583,7 @@ def ordenes_en_proceso_gig(request):
         numero_a_ver = request.POST.get("numero")
 
         orden_existentes = OrdenesGigantografia.objects.all().filter(num_solicitud_ot=numero_a_ver)
-        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
+        return render(request, "ordenes_en_proceso_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
 
 
 
@@ -407,14 +605,14 @@ def ordenes_sin_fecha_gig(request):
         else:
             ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
         print(ordenes_por_fecha)
-        return render(request, "ordenes_sin_fecha_gig.html",{"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
+        return render(request, "ordenes_sin_fecha_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
     elif request.method == "POST" and request.POST.get("boton_regresar") == "REGRESAR":
         buscar=False
         if request.user.categoria == "VEN":
             ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(vendedor_ot=request.user).filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
         else:
             ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
-        return render(request, "ordenes_sin_fecha_gig.html",{"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
+        return render(request, "ordenes_sin_fecha_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"ordenes_existentes":ordenes_existentes,"buscar":buscar})
 
     elif request.method == "POST" and request.POST.get("boton_fecha") == "ESTABLECER FECHA DE ENTREGA":
         buscar=False
@@ -437,7 +635,7 @@ def ordenes_sin_fecha_gig(request):
         ordenes_por_fecha_gig = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
         orden_existentes = OrdenesGigantografia.objects.all().filter(num_solicitud_ot=numero_a_ver)
         hoy = datetime.today().date()
-        return render(request, "ordenes_sin_fecha_gig.html",{"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
+        return render(request, "ordenes_sin_fecha_gig.html",{"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"hoy":hoy,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes,"orden_existentes":orden_existentes, "buscar":buscar, "numero_a_ver":numero_a_ver, "ordenes_existentes":ordenes_existentes})
 
 @login_required
 def ordenes_por_aperturar_gig(request):
@@ -798,9 +996,12 @@ def eliminar_solicitud(request):
     if request.method == 'POST' and request.POST.get("eliminar_ot"):
         cambiado = True
         orden_a_eliminar = models.OrdenesSolicitadas.objects.get(num_solicitud_ot=request.POST.get("orden"))
-        cot_relacionada = models.CotizacionesSolicitadas.objects.get(solicitud_ot=orden_a_eliminar.num_solicitud_ot)
-        cot_relacionada.solicitud_ot = ""
-        cot_relacionada.save()
+        try:
+            cot_relacionada = models.CotizacionesSolicitadas.objects.get(solicitud_ot=orden_a_eliminar.num_solicitud_ot)
+            cot_relacionada.solicitud_ot = ""
+            cot_relacionada.save()
+        except:
+            pass
         usuario = models.Usuarios.objects.get(username=request.user)
         fecha_ultima = usuario.fecha_ultima_ot.month
         hoy = datetime.now().month
@@ -852,7 +1053,7 @@ def eliminar_solicitud(request):
 @login_required
 def change_password(request):
     cambiado = False
-    usuarios_existentes = models.Usuarios.objects.all()
+    usuarios_existentes = models.Usuarios.objects.all().exclude(username__exact="jjacaitu").exclude(username__exact="Fmanfredi")
     ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
     ordenes_existentes_gig = OrdenesGigantografia.objects.all().filter(cotizador_ot__exact="")
     ordenes_por_confirmar = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").exclude(material_confirmado=True)
@@ -981,6 +1182,45 @@ def ordenes_en_proceso(request):
         orden.estado_ot = "Orden terminada"
         orden.save()
         return HttpResponseRedirect(reverse('ordenes_en_proceso'))
+
+    elif request.method == "POST" and request.POST.get("borrar") == "HABILITAR ELIMINACION":
+        buscar = True
+        numero_1 = request.POST.get("numero1")
+        orden_existentes = OrdenesSolicitadas.objects.all().filter(num_solicitud_ot=numero_1)
+        ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
+        orden = OrdenesSolicitadas.objects.get(num_solicitud_ot=numero_1)
+
+        orden.permiso_borrar = True
+        orden.save()
+
+        return render(request, "ordenes_en_proceso.html",{"orden_existentes":orden_existentes,"ordenes_existentes":ordenes_existentes,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes, "buscar":buscar, "numero_a_ver":numero_1, "ordenes_existentes_gig":ordenes_existentes_gig})
+
+    elif request.method == "POST" and request.POST.get("boton_fecha") == "ESTABLECER FECHA DE ENTREGA":
+        buscar=False
+        numero_1 = request.POST.get("numero1")
+        orden = OrdenesSolicitadas.objects.get(num_solicitud_ot=numero_1)
+
+        orden.fecha_entrega_ot = request.POST.get("fecha")
+
+
+
+
+
+        orden.save()
+        return HttpResponseRedirect(reverse('ordenes_en_proceso'))
+
+    elif request.method == "POST" and request.POST.get("borrar") == "DESHABILITAR ELIMINACION":
+        buscar = True
+        numero_1 = request.POST.get("numero1")
+        orden_existentes = OrdenesSolicitadas.objects.all().filter(num_solicitud_ot=numero_1)
+        ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
+        orden = OrdenesSolicitadas.objects.get(num_solicitud_ot=numero_1)
+
+        orden.permiso_borrar = False
+        orden.save()
+
+        return render(request, "ordenes_en_proceso.html",{"orden_existentes":orden_existentes,"ordenes_existentes":ordenes_existentes,"ordenes_por_confirmar":ordenes_por_confirmar,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"cotizaciones_existentes":cotizaciones_existentes, "buscar":buscar, "numero_a_ver":numero_1, "ordenes_existentes_gig":ordenes_existentes_gig})
+
 
     elif request.method == "POST" and request.POST.get("boton_cerrar") == "CERRAR OT":
         buscar=False
@@ -3505,12 +3745,15 @@ def reportes(request):
 
         print("aqui",cot_dict)
         print(ven_dict)
-
+        print("ACA",datas_vendedores_ot_gig)
+        print(datas_ot_gig)
         ordenes_existentes = OrdenesSolicitadas.objects.all().filter(cotizador_ot__exact="")
         ordenes_proceso = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").order_by("fecha_entrega_ot")
         ordenes_por_fecha = OrdenesSolicitadas.objects.all().exclude(estado_ot__exact="Cerrada").exclude(estado_ot__exact="Por aperturar").filter(fecha_entrega_ot=None).order_by("fecha_entrega_ot")
+        titles_vendedores_ot_gig = titles_vendedores_ot[:]
+        titles_vendedores_gig = titles_vendedores[:]
+        return render(request,"reportes.html",{"titles_vendedores_gig":titles_vendedores_gig,"titles_vendedores_ot_gig":titles_vendedores_ot_gig,"datas_ot_gig":datas_ot_gig,"datas_vendedores_ot_gig":datas_vendedores_ot_gig,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"datas_vendedores_ot":datas_vendedores_ot,"titles_vendedores_ot":titles_vendedores_ot,"titles_ot":titles_ot,"datas_ot":datas_ot,"buscar":buscar,"cot_dict":cot_dict,"ven_dict":ven_dict,"ordenes_existentes":ordenes_existentes,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"datas_vendedores":datas_vendedores,"titles_vendedores":titles_vendedores,"titles":titles,"labels_names":labels,"datas":datas,"resultados_dict":resultados_dict,"clientes_creados":clientes_creados,"trabajos_creados":trabajos_creados,"cotizadores":cotizadores,"vendedores":vendedores,"cotizaciones_existentes":cotizaciones_existentes})
 
-        return render(request,"reportes.html",{"datas_ot_gig":datas_ot_gig,"datas_vendedores_ot_gig":datas_vendedores_ot_gig,"ordenes_existentes_gig":ordenes_existentes_gig,"ordenes_por_fecha_gig":ordenes_por_fecha_gig,"ordenes_proceso_gig":ordenes_proceso_gig,"datas_vendedores_ot":datas_vendedores_ot,"titles_vendedores_ot":titles_vendedores_ot,"titles_ot":titles_ot,"datas_ot":datas_ot,"buscar":buscar,"cot_dict":cot_dict,"ven_dict":ven_dict,"ordenes_existentes":ordenes_existentes,"ordenes_proceso":ordenes_proceso,"ordenes_por_fecha":ordenes_por_fecha,"datas_vendedores":datas_vendedores,"titles_vendedores":titles_vendedores,"titles":titles,"labels_names":labels,"datas":datas,"resultados_dict":resultados_dict,"clientes_creados":clientes_creados,"trabajos_creados":trabajos_creados,"cotizadores":cotizadores,"vendedores":vendedores,"cotizaciones_existentes":cotizaciones_existentes})
 
     if request.method == "POST" and request.POST.get("buscar") == "BUSCAR":
         buscar = "True"
